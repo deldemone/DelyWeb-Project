@@ -31,15 +31,10 @@ def aleatoireString(nbcar, type):
 	
 	
 # Log : DEBUG
-
-logger = logging.getLogger('chaine_alea')
-logger.setLevel(logging.DEBUG)
-fh = logging.FileHandler('debug.log')
-fh.setLevel(logging.DEBUG)
-logger.addHandler(fh)
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-fh.setFormatter(formatter)
-logger.addHandler(fh)
+def log(chaine_alea):
+logging.basicConfig(filename='test_log.log',level=logging.DEBUG,\
+      format='%(asctime)s -- ' + chaine_alea + ' -- %(levelname)s -- %(message)s')
+	  
 # logger.debug('Information Debug')
 # logger.info('Information Info')
 # logger.warning('Avertissement')
@@ -70,7 +65,8 @@ for ip in ipmachines:
     nbcar = 8  
     type = "REQ"  
     aleatoireString(nbcar, type)
-    logger.info(chaine_alea + "Le PC " + ip + " est connecté")
+    log(chaine_alea)
+    logger.info(chainealea + "Le PC " + ip + " est connecté")
     # Dépot de la clé publique sur le client
     cmd= ("sshpass -f /root/.pwd ssh-copy-id -i /root/.ssh/id_rsa.pub root@" + ip)
     os.system(cmd)
