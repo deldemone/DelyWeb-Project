@@ -32,7 +32,19 @@ for ping in range(1,254):
     if (hostname != None):
         ipmachines.append(adresse)
 		
+# Connexion SSH vers les machines connectées
+for ip in ipmachines:
+    print(ip)
+    print(pwd)
+    client = paramiko.SSHClient()
+    client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    client.connect(ip, 22, username, pwd)
+    stdin, stdout, stderr = ssh.exec_command(ls)
 
+    lines = stdout.readlines()
+
+    print(lines)
+    client.close()
 
 
 
