@@ -14,6 +14,23 @@ pwd = /root/.pwd
 
 import socket
 import os
+import logging
+
+# Niveau de log : DEBUG
+logging.basicConfig( level=logging.DEBUG, filename='encours.log')
+logger = logging.getLogger('Journal_exemple')
+logger.setLevel(logging.DEBUG)
+fh = logging.FileHandler('debug.log')
+fh.setLevel(logging.DEBUG)
+logger.addHandler(fh)
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+fh.setFormatter(formatter)
+logger.addHandler(fh)
+logger.debug('Information Debug')
+logger.info('Information Info')
+logger.warning('Avertissement')
+logger.error('Message d’erreur')
+logger.critical('Erreur grave')
 
 # Tableau qui stockera les ip connectées """
 ipmachines = []
@@ -38,3 +55,4 @@ for ip in ipmachines:
     print("Le PC " + ip + " est connecté \n")
     # Dépot de la clé publique sur le client
     cmd= ("sshpass -f /root/.pwd ssh-copy-id -i /root/.ssh/id_rsa.pub root@" + ip)
+    os.system(cmd)
