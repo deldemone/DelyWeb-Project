@@ -2,26 +2,26 @@
 # -*- coding: utf-8 -*-
 
 ###Description: Permet de scanner le reseau d'un domaine et de parametrer les clients à distance"""
-
+##################################################################################################################
 __author__ = "Delphine Durand Demongeot"
 __version__ = "1.0.0"
 __email__ = "dd0275416@gmail.com"
 __status__ = "En cours de rédaction"
 
 
-#########################################################
+##################################################################################################################
 #	LES MODULES
 #=======================================================#
 
-import socket											# module communication réseau
-import os												# module pour le système d'exploitation
-import logging											# module de journalisation
-import argparse 										# module d'analyse de ligne de commande
-import random											# module génèration des nombres pseudo-aléatoires
+import socket		# module communication réseau
+import os			# module pour le système d'exploitation
+import logging		# module de journalisation
+import argparse 	# module d'analyse de ligne de commande
+import random		# module génèration des nombres pseudo-aléatoires
 from string import punctuation, ascii_letters, digits	# module des opérations usuelles sur les chaînes
-import datetime					 						# Module format date & heure
+import datetime		# Module format date & heure
 
-#########################################################
+##################################################################################################################
 #	LES VARIABLES
 #=======================================================#
 now = datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")
@@ -31,7 +31,7 @@ fichiermdp = open("/root/.pwd" , "r")
 FicInventaire = DirWork + "/invent.log"
 retourfonction = ""
 
-#########################################################
+##################################################################################################################
 #	LES FONCTIONS
 #=======================================================#
 
@@ -96,7 +96,7 @@ def inventaire(LigneInvent):
     writeInvent.write(LigneInvent + "\n")
     writeInvent.close()
 
-#########################################################
+##################################################################################################################
 #	JOURNALISATION & NIVEAU DE LOG
 #=======================================================#
 #
@@ -147,7 +147,7 @@ MSG = print("retour =" + str(retourfonction))
 # Format de ligne de log
 logging.basicConfig(filename=FicLOG, format='%(asctime)s ' + str(retourfonction) +' %(message)s', level=level)
    
-#########################################################
+##################################################################################################################
 #	SCANNER IP
 #=======================================================#
 # Tableau qui stockera les ip connectées 
@@ -171,7 +171,7 @@ for ping in range(1,254):
         ipmachines.append(adresse)
 print(ipmachines)
 
-#########################################################
+##################################################################################################################
 #	TRAITEMENT CLIENT
 #=======================================================#
 
