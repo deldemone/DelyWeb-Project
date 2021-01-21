@@ -30,6 +30,7 @@ FicLOG = DirWork + "/debug.log"
 fichiermdp = open("/root/.pwd" , "r")
 FicInventaire = DirWork + "/invent.log"
 retourfonction = ""
+compteur = 0
 
 ##################################################################################################################
 #	LES FONCTIONS
@@ -64,10 +65,11 @@ def aleatoireString(nbcar, type):
 #	Fonction session SSH
 #===================================================#
 def sessionssh(ip, TXT):
-    readInvent = open(FicInventaire,"r")
+    readInvent = open(FicInventaire,"r")	# ouverture de l'inventaire en lecture seule
     lignes = readInvent.readlines()
+	# afin de ne pas tenter inutilement de redéposer le certif du serveur : on verifie dans l'inventaire
     for ligne in lignes:
-        print("ligne = " + str(lignes))
+        #print("ligne = " + str(lignes))
         
         if ip in ligne:
             MSG = ip + " ### La clé du serveur déja présente sur le client"
@@ -81,31 +83,59 @@ def sessionssh(ip, TXT):
                 os.system(cmd)
                 MSG = ip + " ### Dépot de la clé publique sur le client"
                 logging.info(MSG)
-                LigneInvent = str(now) + ";" + ip + ";"
+                statut = "success"
             except:
                 logging.error(ip + " ### Un pb est survenu lors du depot de la clé")
-                LigneInvent = "error"
-            return LigneInvent
+                statut = "error"
+            return statut
+
+#===================================================#
+#	Fonction paramètres à déployer			
+#===================================================#
+def parametres(compteur):
+	# initialisation du tableau qui stockera les parametres
+    paramClient = []
+	# ajustement du compteur à 2 caractères
+    if ( compteur < 10):
+        prefixecompteur = 0
+    else:
+        prefixecompteur = ""
+	# Génération un hostname => FORLINUX_S(numéro de semaine) + compteur sur 2 car
+    NumSemaine = datetime.datetime.now().strftime("%U")
+    NewHostname = "FORLINUX_S" + NumSemaine + str(prefixecompteur) + str(compteur)
+    paramClient.append(NewHostname) 
+	# Génération  un usID stagiaire => STG_S(numéro de semaine)_compteur sur 2 car
+    NewUser = "STGS" + NumSemaine + str(prefixecompteur) + str(compteur)
+	
+	# Génération mot passe aléatoire => appel de la fonction chaine aleatoire complexe
+    nbcar = 8  
+    type = "PWD"  
+    password = aleatoireString(nbcar, type)
+    return password, NewHostname, NewUser
+
+#===================================================#
+#	Commandes à déployer			
+#===================================================#
+# Changement Hostname
+# On verifie que l'utilisateur ne soit pas déjà referencé dans le /etc/passwd
+# suppression ancien user/home
+# Création du compte utilisateur
+# Changement de mot de passe
+
 
 #===================================================#
 #	Fonction Inventaire			
 #===================================================#
 def inventaire(LigneInvent):
-    writeInvent = open(FicInventaire,"a")
-    
-    writeInvent.write(LigneInvent + "\n")
-    writeInvent.close()
+    writeInvent = open(FicInventaire,"a")	# ouverture de l'inventaire en écriture
+    writeInvent.write(LigneInvent + "\n")	# édition de l'inventaire
+    writeInvent.close()		# fermeture du fichier inventaire
 
 ##################################################################################################################
 #	JOURNALISATION & NIVEAU DE LOG
 #=======================================================#
-#
-# permet à l'utilisateur de nommer le niveau avec des majuscules ou des minuscules, 
-# permet de spécifier un seul niveau et de choisir le niveau explicite dans un dictionnaire 
-# avec pour valeur par défaut le niveau WARNING:
-###
-# Vérification de l'argument saisi lors de l'execution du script
-parser = argparse.ArgumentParser()
+
+parser = argparse.ArgumentParser()	# Vérification de l'argument saisi lors de l'execution du script
 parser.add_argument(
     "-log", 
     "--log", 
@@ -115,11 +145,9 @@ parser.add_argument(
         "Exemple --log debug', niveau par defaut ='warning'"),
     )
 ###
-# Définition du namespace exemple : --log=INFO => Namespace(log='INFO')
-options = parser.parse_args()
+options = parser.parse_args()	# Définition du namespace exemple : --log=INFO => Namespace(log='INFO')
 ###
-# Création du dictionnaire des niveaux de log
-levels = {
+levels = {		# Création du dictionnaire des niveaux de log
     'critical': logging.CRITICAL,	# =50
     'error': logging.ERROR,			# =40
     'warn': logging.WARNING,		# =30
@@ -128,23 +156,20 @@ levels = {
     'debug': logging.DEBUG			# =10
 }
 ###
-# Définir la correspondance niveau en numerique ex : debug=10 info=20
-level = levels.get(options.log.lower())
-
+level = levels.get(options.log.lower())	# Définit la correspondance niveau en numerique ex : debug=10 info=20
 ###
-# Condition si la syntaxe du niveau est erroné ou n'existe pas :
-if level is None:
+if level is None:	# Condition si la syntaxe du niveau est erroné ou n'existe pas :
     raise ValueError(
         f"Niveau de log envoyé: {options.log}"
         f" -- devrait être : {' | '.join(levels.keys())}")
 		
-# Appel de la fonction de génération de chaîne aléatoire
+### Appel de la fonction de génération de chaîne aléatoire
 nbcar = 5  
 type = "REQ"  
 retourfonction = aleatoireString(nbcar, type)
 MSG = print("retour =" + str(retourfonction)) 
 
-# Format de ligne de log
+### Format de ligne de log
 logging.basicConfig(filename=FicLOG, format='%(asctime)s ' + str(retourfonction) +' %(message)s', level=level)
    
 ##################################################################################################################
@@ -161,7 +186,7 @@ for ping in range(1,254):
 # Récupération des informations
     try:
         hostname, alias, listadresse = socket.gethostbyaddr(adresse)
-# Exception aucun client connecté avec IP
+# Exception aucun client connecté avec IP de la plage
     except socket.herror:
         hostname = None
         alias = None
@@ -169,20 +194,29 @@ for ping in range(1,254):
 # On valorise le tableau avec les IP des PC connectés
     if (hostname != None):
         ipmachines.append(adresse)
-print(ipmachines)
+# print(ipmachines)
 
 ##################################################################################################################
 #	TRAITEMENT CLIENT
 #=======================================================#
 
-
 for ip in ipmachines:
     logging.info( ip + ' ### Le PC est présent sur le réseau')
+    compteur = compteur + 1
+    client = str(now)  
+    param = parametres(compteur)
+
+    dictionnaire = "Client" + str(compteur)
+    dictionnaire = {}
+    dictionnaire["AdresseIP"] = ip
+    dictionnaire["hostname"] = str(param[1])
+    dictionnaire["userid"] = str(param[2])
+    dictionnaire["password"] = str(param[0])
+    for cle,valeur in dictionnaire.items():
+        client = client + ";" +  valeur 
     TXT = ""
-    LigneInvent = sessionssh(ip, TXT)
-    if (LigneInvent != "error"):
-        inventaire(str(LigneInvent))
-	
-	
-	
-	
+    statut = sessionssh(ip, TXT)
+    if (statut != "error"):
+        print(client)
+        inventaire(str(client))
+
