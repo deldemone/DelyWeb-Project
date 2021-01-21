@@ -3,24 +3,15 @@
 
 ###Description: Permet de scanner le reseau d'un domaine et de parametrer les clients à distance"""
 
-__author__ = "Delphine Demongeot"
+__author__ = "Delphine Durand Demongeot"
 __version__ = "1.0.0"
-__email__ = "delphine.demongeot@gmail.com"
+__email__ = "dd0275416@gmail.com"
 __status__ = "En cours de rédaction"
 
-#########################################################
-####################  lES VARIABLES  ####################
-#########################################################
-
-DirWork = "/root/Work"
-FicLOG = DirWork + "/debug.log"
-fichiermdp = open("/root/.pwd" , "r")
-FicInventaire = DirWork + "/invent.log"
-retourfonction = ""
 
 #########################################################
-####################	lES MODULES  #################### 
-#########################################################
+#						LES MODULES					#
+#=======================================================#
 
 import socket											# module communication réseau
 import os												# module pour le système d'exploitation
@@ -31,11 +22,23 @@ from string import punctuation, ascii_letters, digits	# module des opérations u
 import datetime					 						# Module format date & heure
 
 #########################################################
-#################### LES FONCTIONS ###################### 
-#########################################################
-#     Fonction "Génèration de chaîne aléatoire"
-###
+#						LES VARIABLES					#
+#=======================================================#
+now = datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+DirWork = "/root/Work"
+FicLOG = DirWork + "/debug.log"
+fichiermdp = open("/root/.pwd" , "r")
+FicInventaire = DirWork + "/invent.log"
+retourfonction = ""
 
+#########################################################
+#						LES FONCTIONS					#
+#=======================================================#
+
+
+#===================================================#
+#			Fonction Génération de chaîne			#
+#===================================================#
 def aleatoireString(nbcar, type):
     # On détermine la complexité de la chaine à génèrer...
     alphanum = ascii_letters + digits
@@ -57,12 +60,45 @@ def aleatoireString(nbcar, type):
 # nbcar = 8  
 # type = "REQ"  
 # aleatoireString(nbcar, type)
+#===================================================#
+#				Fonction session SSH				#
+#===================================================#
+def sessionssh(ip, TXT):
+    readInvent = open(FicInventaire,"r")
+    lignes = readInvent.readlines()
+    for ligne in lignes:
+        print("ligne = " + str(lignes))
+        
+        if ip in ligne:
+            MSG = ip + " ### La clé du serveur déja présente sur le client"
+            # print(MSG) 
+            logging.info(MSG)
+        else:
+            MSG = ip + " ### Nouvelle clé du serveur à déployer"
+            # print(MSG) 
+            cmd= ("sshpass -f /root/.pwd ssh-copy-id -i /root/.ssh/id_rsa.pub root@" + ip)
+            try:
+                os.system(cmd)
+                MSG = ip + " ### Dépot de la clé publique sur le client"
+                logging.info(MSG)
+                LigneInvent = str(now) + ";" + ip + ";"
+            except:
+                logging.error(ip + " ### Un pb est survenu lors du depot de la clé")
+                LigneInvent = "error"
+            return LigneInvent
 
-
+#===================================================#
+#					Fonction Inventaire				#
+#===================================================#
+def inventaire(LigneInvent):
+    writeInvent = open(FicInventaire,"a")
+    
+    writeInvent.write(LigneInvent + "\n")
+    writeInvent.close()
 
 #########################################################
-########### JOURNALISATION & NIVEAU DE LOG ##############
-#########################################################
+#				JOURNALISATION & NIVEAU DE LOG			#
+#=======================================================#
 #
 # permet à l'utilisateur de nommer le niveau avec des majuscules ou des minuscules, 
 # permet de spécifier un seul niveau et de choisir le niveau explicite dans un dictionnaire 
@@ -111,12 +147,13 @@ MSG = print("retour =" + str(retourfonction))
 # Format de ligne de log
 logging.basicConfig(filename=FicLOG, format='%(asctime)s ' + str(retourfonction) +' %(message)s', level=level)
    
-
-#################### SCANNER d'IP #################### 
-###
+#########################################################
+#						SCANNER IP						#
+#=======================================================#
 # Tableau qui stockera les ip connectées 
 ipmachines = []
-logging.info('Le scanner ip a démarré')
+
+logging.info('###  LOGINIT   ### DEMARRAGE DU SCANNER IP')
 # Scan du réseau plage IP [1-254]
 for ping in range(1,254):
     adresse = "192.168.122." + str(ping)
@@ -132,32 +169,20 @@ for ping in range(1,254):
 # On valorise le tableau avec les IP des PC connectés
     if (hostname != None):
         ipmachines.append(adresse)
+print(ipmachines)
 
-#################### SESSION SSH #################### 		
-# Connexion SSH vers les machines connectées
-###
+#########################################################
+#					TRAITEMENT CLIENT					#
+#=======================================================#
+
+
 for ip in ipmachines:
-    logging.info('Le PC ' + ip + ' est connecté')
-    fichier = open(FicInventaire,"r")
-    lignes = fichier.readlines()
-    for ligne in lignes:
-        if ip in ligne:
-           MSG = "La clé du serveur est déja présente sur le client distant"
-           print(MSG) 
-           logging.info(MSG)
-        else:
-            fichier.close()
-            fichier = open(FicInventaire,"a")
-            print("clé pas dans l inventaire") 
-            cmd= ("sshpass -f /root/.pwd ssh-copy-id -i /root/.ssh/id_rsa.pub root@" + ip)
-            try:
-                os.system(cmd)
-                MSG = "Dépot de la clé publique sur le client"
-                logging.info(MSG)
-                now = datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-                IN_INVENT = now + ";" + ip + ";"
-                fichier.write("/n" + IN_INVENT)
-                fichier.close()
-            except:
-                logging.error("LA clé n'a pas été déposé sur le client distant" + ip)
-
+    logging.info( ip + ' ### Le PC est présent sur le réseau')
+    TXT = ""
+    LigneInvent = sessionssh(ip, TXT)
+    if (LigneInvent != "error"):
+        inventaire(str(LigneInvent))
+	
+	
+	
+	
