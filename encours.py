@@ -10,7 +10,7 @@ __status__ = "En cours de rédaction"
 
 
 #########################################################
-#						LES MODULES					#
+#	LES MODULES
 #=======================================================#
 
 import socket											# module communication réseau
@@ -22,7 +22,7 @@ from string import punctuation, ascii_letters, digits	# module des opérations u
 import datetime					 						# Module format date & heure
 
 #########################################################
-#						LES VARIABLES					#
+#	LES VARIABLES
 #=======================================================#
 now = datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")
 DirWork = "/root/Work"
@@ -32,12 +32,12 @@ FicInventaire = DirWork + "/invent.log"
 retourfonction = ""
 
 #########################################################
-#						LES FONCTIONS					#
+#	LES FONCTIONS
 #=======================================================#
 
 
 #===================================================#
-#			Fonction Génération de chaîne			#
+#	Fonction Génération de chaîne
 #===================================================#
 def aleatoireString(nbcar, type):
     # On détermine la complexité de la chaine à génèrer...
@@ -61,7 +61,7 @@ def aleatoireString(nbcar, type):
 # type = "REQ"  
 # aleatoireString(nbcar, type)
 #===================================================#
-#				Fonction session SSH				#
+#	Fonction session SSH
 #===================================================#
 def sessionssh(ip, TXT):
     readInvent = open(FicInventaire,"r")
@@ -88,7 +88,7 @@ def sessionssh(ip, TXT):
             return LigneInvent
 
 #===================================================#
-#					Fonction Inventaire				#
+#	Fonction Inventaire			
 #===================================================#
 def inventaire(LigneInvent):
     writeInvent = open(FicInventaire,"a")
@@ -97,7 +97,7 @@ def inventaire(LigneInvent):
     writeInvent.close()
 
 #########################################################
-#				JOURNALISATION & NIVEAU DE LOG			#
+#	JOURNALISATION & NIVEAU DE LOG
 #=======================================================#
 #
 # permet à l'utilisateur de nommer le niveau avec des majuscules ou des minuscules, 
@@ -148,7 +148,7 @@ MSG = print("retour =" + str(retourfonction))
 logging.basicConfig(filename=FicLOG, format='%(asctime)s ' + str(retourfonction) +' %(message)s', level=level)
    
 #########################################################
-#						SCANNER IP						#
+#	SCANNER IP
 #=======================================================#
 # Tableau qui stockera les ip connectées 
 ipmachines = []
@@ -172,7 +172,7 @@ for ping in range(1,254):
 print(ipmachines)
 
 #########################################################
-#					TRAITEMENT CLIENT					#
+#	TRAITEMENT CLIENT
 #=======================================================#
 
 
