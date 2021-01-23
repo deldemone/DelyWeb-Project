@@ -12,7 +12,7 @@ __status__ = "En cours de rédaction"
 ##################################################################################################################
 #	LES MODULES
 #=======================================================#
-
+import sys
 import socket		# module communication réseau
 import os			# module pour le système d'exploitation
 import logging		# module de journalisation
@@ -68,26 +68,29 @@ def sessionssh(ip, TXT):
     readInvent = open(FicInventaire,"r")	# ouverture de l'inventaire en lecture seule
     lignes = readInvent.readlines()
 	# afin de ne pas tenter inutilement de redéposer le certif du serveur : on verifie dans l'inventaire
+    present = False
     for ligne in lignes:
-        #print("ligne = " + str(lignes))
-        
+        #print("ligne = " + str(lignes))   
         if ip in ligne:
             MSG = ip + " ### La clé du serveur déja présente sur le client"
-            # print(MSG) 
+            print(MSG)
+            present = True
+            statut = ""
+            break
+            #logging.info(MSG)
+    if (present == False):
+        MSG = ip + " ### Nouvelle clé du serveur à déployer"
+        print(MSG) 
+        cmd= ("sshpass -f /root/.pwd ssh-copy-id -i /root/.ssh/id_rsa.pub root@" + ip)
+        try:
+            os.system(cmd)
+            MSG = ip + " ### Dépot de la clé publique sur le client"
             logging.info(MSG)
-        else:
-            MSG = ip + " ### Nouvelle clé du serveur à déployer"
-            # print(MSG) 
-            cmd= ("sshpass -f /root/.pwd ssh-copy-id -i /root/.ssh/id_rsa.pub root@" + ip)
-            try:
-                os.system(cmd)
-                MSG = ip + " ### Dépot de la clé publique sur le client"
-                logging.info(MSG)
-                statut = "success"
-            except:
-                logging.error(ip + " ### Un pb est survenu lors du depot de la clé")
-                statut = "error"
-            return statut
+            statut = "success"
+        except:
+            logging.error(ip + " ### Un pb est survenu lors du depot de la clé")
+            statut = "error"
+        return statut
 
 #===================================================#
 #	Fonction paramètres à déployer			
@@ -134,66 +137,61 @@ def inventaire(LigneInvent):
 ##################################################################################################################
 #	JOURNALISATION & NIVEAU DE LOG
 #=======================================================#
+if len(sys.argv) != 3:
+    print("usage : encours.py --log=debug|info|warn --reseau=192.168.1.0")
+    sys.exit(1)
 
-parser = argparse.ArgumentParser()	# Vérification de l'argument saisi lors de l'execution du script
-parser.add_argument(
-    "-log", 
-    "--log", 
-    default="warning",
-    help=(
-        "Préciser un niveau de journalisation."
-        "Exemple --log debug', niveau par defaut ='warning'"),
-    )
-###
-options = parser.parse_args()	# Définition du namespace exemple : --log=INFO => Namespace(log='INFO')
-###
-levels = {		# Création du dictionnaire des niveaux de log
-    'critical': logging.CRITICAL,	# =50
-    'error': logging.ERROR,			# =40
-    'warn': logging.WARNING,		# =30
-    'warning': logging.WARNING,		# =30
-    'info': logging.INFO,			# =20
-    'debug': logging.DEBUG			# =10
-}
-###
-level = levels.get(options.log.lower())	# Définit la correspondance niveau en numerique ex : debug=10 info=20
-###
-if level is None:	# Condition si la syntaxe du niveau est erroné ou n'existe pas :
-    raise ValueError(
-        f"Niveau de log envoyé: {options.log}"
-        f" -- devrait être : {' | '.join(levels.keys())}")
-		
-### Appel de la fonction de génération de chaîne aléatoire
+### Récuperation du niveau de log
+separateur = "="
+niveaulog = sys.argv[1]
+niveau = separateur.join(niveaulog.split(separateur)[1:])
+nivLog = getattr(logging, niveau.upper(), None)
+print(nivLog)
+if ( nivLog == None ):
+    raise ValueError('Niveau de log invalide, vous avez saisi : %s' % niveau + '\n usage : encours.py --log=debug|info|warn --reseau=192.168.1.0')
+
+### Géneration d'un numéro de requête : Appel de la fonction aleatoireString
 nbcar = 5  
 type = "REQ"  
 retourfonction = aleatoireString(nbcar, type)
 MSG = print("retour =" + str(retourfonction)) 
 
 ### Format de ligne de log
-logging.basicConfig(filename=FicLOG, format='%(asctime)s ' + str(retourfonction) +' %(message)s', level=level)
+logging.basicConfig(filename=FicLOG, format='%(asctime)s ' + str(retourfonction) +' %(message)s', level=nivLog)
+
    
 ##################################################################################################################
 #	SCANNER IP
 #=======================================================#
+separateur = "="
+argument2 = sys.argv[2]
+reseau = separateur.join(argument2.split(separateur)[1:])
+#print("reseau : " + reseau)
 # Tableau qui stockera les ip connectées 
 ipmachines = []
-
 logging.info('###  LOGINIT   ### DEMARRAGE DU SCANNER IP')
+
 # Scan du réseau plage IP [1-254]
 for ping in range(1,254):
-    adresse = "192.168.122." + str(ping)
-    socket.setdefaulttimeout(1)
+    if ( str(reseau) != ""):
+        separateur = "."
+        network = separateur.join(reseau.split(separateur)[:-1]) + "."
+        #print("network:" + str(network))
+        adresse = network + str(ping)
+        socket.setdefaulttimeout(1)
 # Récupération des informations
-    try:
-        hostname, alias, listadresse = socket.gethostbyaddr(adresse)
+        try:
+            hostname, alias, listadresse = socket.gethostbyaddr(adresse)
 # Exception aucun client connecté avec IP de la plage
-    except socket.herror:
-        hostname = None
-        alias = None
-        listadresse = adresse
+        except socket.herror:
+            hostname = None
+            alias = None
+            listadresse = adresse
 # On valorise le tableau avec les IP des PC connectés
-    if (hostname != None):
-        ipmachines.append(adresse)
+        if (hostname != None):
+            ipmachines.append(adresse)
+    else:
+        exit("Merci de renseigner le sous-réseau à reinitialiser : exemple Python3 encours.py --log=debug 192.168.1.0")
 # print(ipmachines)
 
 ##################################################################################################################
@@ -217,6 +215,6 @@ for ip in ipmachines:
     TXT = ""
     statut = sessionssh(ip, TXT)
     if (statut != "error"):
-        print(client)
+        #print(client)
         inventaire(str(client))
 
