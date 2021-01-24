@@ -20,6 +20,7 @@ import argparse 	# module d'analyse de ligne de commande
 import random		# module génèration des nombres pseudo-aléatoires
 from string import punctuation, ascii_letters, digits	# module des opérations usuelles sur les chaînes
 import datetime		# Module format date & heure
+import time
 
 ##################################################################################################################
 #	LES VARIABLES
@@ -64,14 +65,14 @@ def aleatoireString(nbcar, type):
 #===================================================#
 #	Fonction session SSH
 #===================================================#
-def sessionssh(ip, TXT):
+def sessionssh(ip, TXT, mac):
     readInvent = open(FicInventaire,"r")	# ouverture de l'inventaire en lecture seule
     lignes = readInvent.readlines()
 	# afin de ne pas tenter inutilement de redéposer le certif du serveur : on verifie dans l'inventaire
     present = False
     for ligne in lignes:
         #print("ligne = " + str(lignes))   
-        if ip in ligne:
+        if mac in ligne:
             MSG = ip + " ### La clé du serveur déja présente sur le client"
             print(MSG)
             present = True
@@ -84,7 +85,9 @@ def sessionssh(ip, TXT):
         cmd= ("sshpass -f /root/.pwd ssh-copy-id -i /root/.ssh/id_rsa.pub root@" + ip)
         try:
             os.system(cmd)
+            time.sleep(10)  
             MSG = ip + " ### Dépot de la clé publique sur le client"
+            print(MSG) 
             logging.info(MSG)
             statut = "success"
         except:
@@ -95,7 +98,7 @@ def sessionssh(ip, TXT):
 #===================================================#
 #	Fonction paramètres à déployer			
 #===================================================#
-def parametres(compteur):
+def parametres(compteur, ip):
 	# initialisation du tableau qui stockera les parametres
     paramClient = []
 	# ajustement du compteur à 2 caractères
@@ -114,7 +117,9 @@ def parametres(compteur):
     nbcar = 8  
     type = "PWD"  
     password = aleatoireString(nbcar, type)
+	
     return password, NewHostname, NewUser
+
 
 #===================================================#
 #	Commandes à déployer			
@@ -135,16 +140,26 @@ def inventaire(LigneInvent):
     writeInvent.close()		# fermeture du fichier inventaire
 
 ##################################################################################################################
-#	JOURNALISATION & NIVEAU DE LOG
+#	xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 #=======================================================#
-if len(sys.argv) != 3:
-    print("usage : encours.py --log=debug|info|warn --reseau=192.168.1.0")
-    sys.exit(1)
 
+parser = argparse.ArgumentParser('Executer ce script requiert deux arguments --log et --reseau ')
+
+parser.add_argument('--reseau',
+                    type=str,
+                    help='Préciser le reseau cible ex: --reseau=192.168.122.0',
+                    required=True)
+parser.add_argument('--log',
+                    type=str,
+                    help='Usage : --log=debug|info|warn',
+                    required=True)
+args = parser.parse_args()
+
+##################################################################################################################
+#	xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+#=======================================================#
 ### Récuperation du niveau de log
-separateur = "="
-niveaulog = sys.argv[1]
-niveau = separateur.join(niveaulog.split(separateur)[1:])
+niveau = args.log
 nivLog = getattr(logging, niveau.upper(), None)
 print(nivLog)
 if ( nivLog == None ):
@@ -163,16 +178,14 @@ logging.basicConfig(filename=FicLOG, format='%(asctime)s ' + str(retourfonction)
 ##################################################################################################################
 #	SCANNER IP
 #=======================================================#
-separateur = "="
-argument2 = sys.argv[2]
-reseau = separateur.join(argument2.split(separateur)[1:])
-#print("reseau : " + reseau)
+reseau = args.reseau
+
 # Tableau qui stockera les ip connectées 
 ipmachines = []
-logging.info('###  LOGINIT   ### DEMARRAGE DU SCANNER IP')
+logging.info('### LOGINIT ### DEMARRAGE DU SCANNER IP')
 
 # Scan du réseau plage IP [1-254]
-for ping in range(1,254):
+for ping in range(10,14):
     if ( str(reseau) != ""):
         separateur = "."
         network = separateur.join(reseau.split(separateur)[:-1]) + "."
@@ -190,6 +203,10 @@ for ping in range(1,254):
 # On valorise le tableau avec les IP des PC connectés
         if (hostname != None):
             ipmachines.append(adresse)
+			# Récuperation de l'adresse mac
+            writemac = os.system("arp -a " + adresse + " | awk -F\" \" '{print $4}'> tmpmac")
+            mon_fichiermac=open("tmpmac","r")
+            mac = mon_fichiermac.read()
     else:
         exit("Merci de renseigner le sous-réseau à reinitialiser : exemple Python3 encours.py --log=debug 192.168.1.0")
 # print(ipmachines)
@@ -200,11 +217,9 @@ for ping in range(1,254):
 
 for ip in ipmachines:
     logging.info( ip + ' ### Le PC est présent sur le réseau')
-    compteur = compteur + 1
-    client = str(now)  
-    param = parametres(compteur)
+    client = str(now) + ";" + str(mac)
+    param = parametres(compteur, ip)
 
-    dictionnaire = "Client" + str(compteur)
     dictionnaire = {}
     dictionnaire["AdresseIP"] = ip
     dictionnaire["hostname"] = str(param[1])
@@ -213,8 +228,9 @@ for ip in ipmachines:
     for cle,valeur in dictionnaire.items():
         client = client + ";" +  valeur 
     TXT = ""
-    statut = sessionssh(ip, TXT)
+    statut = sessionssh(ip, TXT, mac)
+    print("statut : " + str(statut))
     if (statut != "error"):
         #print(client)
         inventaire(str(client))
-
+logging.info("################################################################")
