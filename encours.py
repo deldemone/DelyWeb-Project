@@ -18,20 +18,24 @@ import os			# module pour le système d'exploitation
 import logging		# module de journalisation
 import argparse 	# module d'analyse de ligne de commande
 import random		# module génèration des nombres pseudo-aléatoires
-from string import punctuation, ascii_letters, digits	# module des opérations usuelles sur les chaînes
+from string import punctuation, ascii_letters, digits, ascii_uppercase	# module des opérations usuelles sur les chaînes
 import datetime		# Module format date & heure
 import time
+import paramiko
 
 ##################################################################################################################
 #	LES VARIABLES
 #=======================================================#
-now = datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+now = datetime.datetime.now().strftime("%d/%m/%Y_%H:%M:%S")
 DirWork = "/root/Work"
 FicLOG = DirWork + "/debug.log"
 fichiermdp = open("/root/.pwd" , "r")
 FicInventaire = DirWork + "/invent.log"
+NewUser = ""
 retourfonction = ""
-compteur = 0
+compteur=0
+resultat = ""
+
 
 ##################################################################################################################
 #	LES FONCTIONS
@@ -43,8 +47,8 @@ compteur = 0
 #===================================================#
 def aleatoireString(nbcar, type):
     # On détermine la complexité de la chaine à génèrer...
-    alphanum = ascii_letters + digits
-    symbols = alphanum + punctuation
+    alphanum = ascii_uppercase + digits
+    symbols = ascii_letters + digits # + punctuation
     #...en fonction du type de chaine souhaité
     if (type == "REQ"):
             complexe = alphanum
@@ -52,8 +56,12 @@ def aleatoireString(nbcar, type):
     elif (type == "PWD"):
             complexe = symbols
             prefixe = ""
+    elif (type == "USER"):
+            complexe = digits
+            prefixe = ""
     # Génération de la chaine aléatoire avec le module random
     Str_aleatoire = random.SystemRandom()
+    resultat = ""
     resultat = "".join(Str_aleatoire.choice(complexe) for i in range(nbcar))
     chaine_alea = prefixe + resultat
     return chaine_alea
@@ -63,9 +71,9 @@ def aleatoireString(nbcar, type):
 # type = "REQ"  
 # aleatoireString(nbcar, type)
 #===================================================#
-#	Fonction session SSH
+#	Fonction SSHPASS
 #===================================================#
-def sessionssh(ip, TXT, mac):
+def sshpass(ip, TXT, mac):
     readInvent = open(FicInventaire,"r")	# ouverture de l'inventaire en lecture seule
     lignes = readInvent.readlines()
 	# afin de ne pas tenter inutilement de redéposer le certif du serveur : on verifie dans l'inventaire
@@ -74,51 +82,78 @@ def sessionssh(ip, TXT, mac):
         #print("ligne = " + str(lignes))   
         if mac in ligne:
             MSG = ip + " ### La clé du serveur déja présente sur le client"
-            print(MSG)
+            logging.info(MSG)
             present = True
-            statut = ""
+            statut = "ok"
             break
             #logging.info(MSG)
     if (present == False):
         MSG = ip + " ### Nouvelle clé du serveur à déployer"
-        print(MSG) 
-        cmd= ("sshpass -f /root/.pwd ssh-copy-id -i /root/.ssh/id_rsa.pub root@" + ip)
+        logging.info(MSG)
+        cmd= ("sshpass -f /root/.pwd ssh-copy-id -i /root/.ssh/id_rsa.pub root@" + ip +"; exit")
         try:
+            #ssh = paramiko.SSHClient() 
             os.system(cmd)
-            time.sleep(10)  
-            MSG = ip + " ### Dépot de la clé publique sur le client"
-            print(MSG) 
+            MSG = ip + " ### SUCCESS -Dépot de la clé publique sur le client "
             logging.info(MSG)
             statut = "success"
-        except:
+        except Exception as e:
+            print(e)
             logging.error(ip + " ### Un pb est survenu lors du depot de la clé")
             statut = "error"
         return statut
 
+def sessionssh(ip):
+    # ssh = paramiko.SSHClient()
+    # ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    # ssh.load_host_keys(os.path.expanduser(os.path.join("~", ".ssh", "known_hosts")))
+    # ssh.connect(ip, username="root", password=fichiermdp)
+    cmd = "ssh root@" + ip + " < /partage/deploy.py &"
+    os.system(cmd)
+    # ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('ls')
+    # ssh.close()
+        
 #===================================================#
 #	Fonction paramètres à déployer			
 #===================================================#
-def parametres(compteur, ip):
+def parametres (ip):
 	# initialisation du tableau qui stockera les parametres
-    paramClient = []
-	# ajustement du compteur à 2 caractères
-    if ( compteur < 10):
-        prefixecompteur = 0
-    else:
-        prefixecompteur = ""
-	# Génération un hostname => FORLINUX_S(numéro de semaine) + compteur sur 2 car
+# Récuperation de l'adresse mac
+    mac = ""
+    writemac = os.system("arp -a " + ip + " | awk -F\" \" '{print $4}'> tmp")
+    mon_fichiermac=open("tmp","r")
+    mac = str(mon_fichiermac.read())
+# Récuperation du hostname
+    host = ""
+    writehost = os.system("arp -a " + ip + " | awk -F\" \" '{print $1}'> tmp")
+    mon_fichierhost=open("tmp","r")
+    host = str(mon_fichierhost.read())
+    print("ici : " + host + mac)
+# Génération  un usID stagiaire => STG_S(numéro de semaine)_compteur sur 2 car
+    nbcar = 4  
+    type = "USER"  
+    IDuser = aleatoireString(nbcar, type)
+    print(IDuser)
     NumSemaine = datetime.datetime.now().strftime("%U")
-    NewHostname = "FORLINUX_S" + NumSemaine + str(prefixecompteur) + str(compteur)
-    paramClient.append(NewHostname) 
-	# Génération  un usID stagiaire => STG_S(numéro de semaine)_compteur sur 2 car
-    NewUser = "STGS" + NumSemaine + str(prefixecompteur) + str(compteur)
+    NewUser = "STGS" + NumSemaine + "-" + str(IDuser)
 	
-	# Génération mot passe aléatoire => appel de la fonction chaine aleatoire complexe
+# Génération mot passe aléatoire => appel de la fonction chaine aleatoire complexe
     nbcar = 8  
     type = "PWD"  
     password = aleatoireString(nbcar, type)
 	
-    return password, NewHostname, NewUser
+    return password, NewUser, mac
+	
+#===================================================#
+#	INITIALISATION DE FICHIER SI NON EXISTANT
+#===================================================#
+def checkFileExistance(filePath):
+    try:
+        with open(filePath, 'r') as f:
+            return True
+    except FileNotFoundError as e:
+        fichier= open(filePath, 'w')
+        fichier.close()
 
 
 #===================================================#
@@ -139,8 +174,9 @@ def inventaire(LigneInvent):
     writeInvent.write(LigneInvent + "\n")	# édition de l'inventaire
     writeInvent.close()		# fermeture du fichier inventaire
 
+
 ##################################################################################################################
-#	xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+#	Définition des arguments
 #=======================================================#
 
 parser = argparse.ArgumentParser('Executer ce script requiert deux arguments --log et --reseau ')
@@ -169,12 +205,10 @@ if ( nivLog == None ):
 nbcar = 5  
 type = "REQ"  
 retourfonction = aleatoireString(nbcar, type)
-MSG = print("retour =" + str(retourfonction)) 
 
 ### Format de ligne de log
-logging.basicConfig(filename=FicLOG, format='%(asctime)s ' + str(retourfonction) +' %(message)s', level=nivLog)
+logging.basicConfig(filename=FicLOG, filemode='w', format='%(asctime)s ' + str(retourfonction) +' %(message)s', level=nivLog)
 
-   
 ##################################################################################################################
 #	SCANNER IP
 #=======================================================#
@@ -182,10 +216,11 @@ reseau = args.reseau
 
 # Tableau qui stockera les ip connectées 
 ipmachines = []
+logging.info("################################################################")
 logging.info('### LOGINIT ### DEMARRAGE DU SCANNER IP')
 
 # Scan du réseau plage IP [1-254]
-for ping in range(10,14):
+for ping in range(2,254):
     if ( str(reseau) != ""):
         separateur = "."
         network = separateur.join(reseau.split(separateur)[:-1]) + "."
@@ -203,10 +238,6 @@ for ping in range(10,14):
 # On valorise le tableau avec les IP des PC connectés
         if (hostname != None):
             ipmachines.append(adresse)
-			# Récuperation de l'adresse mac
-            writemac = os.system("arp -a " + adresse + " | awk -F\" \" '{print $4}'> tmpmac")
-            mon_fichiermac=open("tmpmac","r")
-            mac = mon_fichiermac.read()
     else:
         exit("Merci de renseigner le sous-réseau à reinitialiser : exemple Python3 encours.py --log=debug 192.168.1.0")
 # print(ipmachines)
@@ -214,23 +245,27 @@ for ping in range(10,14):
 ##################################################################################################################
 #	TRAITEMENT CLIENT
 #=======================================================#
+checkFileExistance(FicInventaire)
 
 for ip in ipmachines:
+    client = str(now) 
     logging.info( ip + ' ### Le PC est présent sur le réseau')
-    client = str(now) + ";" + str(mac)
-    param = parametres(compteur, ip)
+    param = parametres(ip)
 
     dictionnaire = {}
     dictionnaire["AdresseIP"] = ip
-    dictionnaire["hostname"] = str(param[1])
-    dictionnaire["userid"] = str(param[2])
+    dictionnaire["userid"] = str(param[1])
     dictionnaire["password"] = str(param[0])
+    dictionnaire["mac"] = str(param[2])
     for cle,valeur in dictionnaire.items():
-        client = client + ";" +  valeur 
+        client = client + ";" + valeur 
+        print(client)
     TXT = ""
-    statut = sessionssh(ip, TXT, mac)
-    print("statut : " + str(statut))
+    mac = str(param[2])
+    statut = sshpass(ip, TXT, mac)
     if (statut != "error"):
-        #print(client)
+        #sessionssh(ip)
         inventaire(str(client))
+        logging.info("###")
+
 logging.info("################################################################")
