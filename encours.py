@@ -27,25 +27,80 @@ import paramiko
 ##################################################################################################################
 #	LES VARIABLES
 #=======================================================#
-now = datetime.datetime.now().strftime("%d/%m/%Y_%H:%M:%S")
+### REPERTOIRES
 DirWork = "/root/Work"
+LOG = DirWork + "/log"
+DirStagiaire = DirWork + "/FicSTGS"
+dicoREP = {}
+dicoREP["DirWork"] = DirWork
+dicoREP["DirStagiaire"] = DirStagiaire
+dicoREP["LOG"] = LOG
+
+### FICHIERS OUTPUT
 FicLOG = DirWork + "/debug.log"
-fichiermdp = open("/root/.pwd" , "r")
-security = str(fichiermdp.read())
 FicInventaire = DirWork + "/invent.log"
+
+### FICHIERS INPUT
+fichiermdp = "/root/.pwd"
+openFicMDP = open("/root/.pwd" , "r")
+security = str(openFicMDP.read())
+
+FicInventaire = DirWork + "/invent.log"
+dicoFIC =  {}
+dicoFIC["mdp"] = fichiermdp
+dicoFIC["inventaire"] = FicInventaire
+
+### VARIABLES GLOBALES
 NewUser = ""
 retourfonction = ""
-compteur=0
 resultat = ""
 
+# CADRE & PREFIXE LOG
+PLEIN = "################################################################"
+LIGHT = "================================================================"
+INTER = "###############"
+OK = " ##  OK  ## *** LOC  - "
+KO = " ##  KO  ## *** LOC  - "
+SO = " ##  SO  ## *** LOC  - "
+INFO = " ## INFO ## *** LOC  - "
+STEP = " ## STEP ## *** LOC  - "
+now = datetime.datetime.now().strftime("%d/%m/%Y_%H:%M:%S")
 
-##################################################################################################################
-#	LES FONCTIONS
-#=======================================================#
-
+##############################################################################################
+#################### 		LES FONCTIONS
 
 #===================================================#
-#	Fonction Génération de chaîne
+#	INITIALISATION DES REPERTOIRES SI NON EXISTANT
+#===================================================#
+def checkRepertoireExistance(path):
+    if not os.path.exists(path):
+        try:
+            os.makedirs(path)
+            MSG = OK +  "Création " + path
+            logging.info(MSG)
+        except CreatePathError as e:
+            logging.error(KO + e)
+    else:
+        MSG = OK + path + " existant"
+        logging.info(MSG)
+
+#===================================================#
+#	INITIALISATION DES FICHIERS SI NON EXISTANT
+#===================================================#
+def checkFileExistance(fic):
+    if not os.path.isfile(fic):
+        try:
+            fichier= open(fic, 'w')
+            logging.info(OK + "Création " + fic)
+            fichier.close()
+        except CreateFileError as e:
+            logging.error(KO + e)
+    else:
+        MSG = OK + fic + " existant"
+        logging.info(MSG)    
+
+#===================================================#
+#	FONCTION DE GENERATION DE CHAINE ALEATOIRE
 #===================================================#
 def aleatoireString(nbcar, type):
     # On détermine la complexité de la chaine à génèrer...
@@ -68,10 +123,6 @@ def aleatoireString(nbcar, type):
     chaine_alea = prefixe + resultat
     return chaine_alea
 
-# Exemple d'appel de fonction avec précision nb caractères et le type (REQ = Requête; PWD = Password; User)
-# nbcar = 8  
-# type = "REQ"  
-# aleatoireString(nbcar, type)
 #===================================================#
 #	Fonction SSHPASS
 #===================================================#
@@ -83,7 +134,7 @@ def sshpass(ip, TXT, mac):
     for ligne in lignes:
         #print("ligne = " + str(lignes))   
         if mac in ligne:
-            MSG = ip + " ### La clé du serveur déja présente sur le client"
+            MSG = OK + "La clé du serveur déja présente sur client"
             logging.info(MSG)
             present = True
             statut = "ok"
@@ -96,127 +147,135 @@ def sshpass(ip, TXT, mac):
         try:
             #ssh = paramiko.SSHClient() 
             os.system(cmd)
-            MSG = ip + " ### SUCCESS -Dépot de la clé publique sur le client "
+            MSG = OK + "Dépot de la clé publique sur le client "
             logging.info(MSG)
             print(MSG)
             statut = "success"
         except Exception as e:
             print(e)
-            logging.error(ip + " ### Un pb est survenu lors du depot de la clé")
+            logging.error(KO + "Un pb est survenu lors du depot de la clé")
             statut = "error"
         return statut
 
 def sessionssh(ip, userID, password):
 ### ouverture de la session ssh
     try:
+        MSG = STEP + "Initialisation de la connexion ssh"
+        logging.info(MSG)
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         ssh.load_host_keys(os.path.expanduser(os.path.join("~", ".ssh", "known_hosts")))
         ssh.connect(ip, username="root", password=str(security))
-        MSG = "### SUCCESS ### Connexion ssh vers " + ip
+        MSG = OK + "Connexion ssh vers " + ip
         logging.info(MSG)
         print(MSG)
         sshsuccess = True
     except Exception as e:
         print(e)
-        logging.warning("### ERROR ### " + str(e))
+        logging.warning(KO + str(e))
         sshsuccess = False
 ### ouverture de la session sftp et copy du script de deploiement
     if (sshsuccess == True):
         try:
+            logging.info(LIGHT)
+            MSG = STEP + "Dépôt du script via le SFTP"
+            logging.info(MSG)
             sftp = ssh.open_sftp()
-            logging.info("### SUCCESS ### Ouverture session sftp")
+            logging.info(OK + "Ouverture session sftp")
             sftp.put('/partage/deploy.py', '/tmp/deploy.py')
-            logging.info("### SUCCESS ### Dépôt du script python sur le client")
+            logging.info(OK + "Dépôt du script python sur le client")
             sftp.close()
-            logging.info("### SUCCESS ### Fermeture session sftp")
+            logging.info(OK + "Fermeture session sftp")
             sftpsuccess = True
-            print("### SUCCESS ### Déploiement du script sur le client")
+            print(OK + "Déploiement du script sur le client")
         except Exception as e:
             print(e)
-            logging.warning("### ERROR ### " + str(e))
+            logging.warning(KO + str(e))
             sftpsuccess = False
 ### exécution du script de déploiement
         if (sftpsuccess == True):
             try:
+                logging.info(LIGHT)
                 stdin, stdout, stderr = ssh.exec_command('python /tmp/deploy.py --userID ' + userID + ' --pwd ' + password)
                 for line in stdout.read().splitlines():
-                    #print(line)
                     sortieDist = (line.decode("utf-8", "ignore"))
                     print(sortieDist)
-                    logging.info(sortieDist)
-                logging.info("### SUCCESS ### Exécution du script de déploiement")
-                ssh.close()
-                logging.info("### SUCCESS ### Fermeture de la session ssh")
+                    if sortieDist != "":
+                        logging.info(sortieDist)
+                logging.info(OK + "Exécution du script de déploiement terminée")
             except Exception as e:
                 print(e)
-                logging.warning("### ERROR ### " + str(e))
+                logging.error( KO + str(e))
                 success = False	
-    
+    try:
+        ssh.close()
+        logging.info(OK + "Fermeture de la session ssh")   
+    except Exception as e:
+        print(e)
+        logging.error( KO + str(e))
         
 #===================================================#
 #	Fonction paramètres à déployer			
 #===================================================#
 def parametres (ip):
 	# initialisation du tableau qui stockera les parametres
+    countError = 0
 # Récuperation de l'adresse mac
     mac = ""
-    writemac = os.system("arp -a " + ip + " | awk -F\" \" '{print $4}'> tmp")
-    mon_fichiermac=open("tmp","r")
-    mactmp = str(mon_fichiermac.read())
-    mac = mac.rstrip("\n")
+    try:
+        writemac = os.system("arp -a " + ip + " | awk -F\" \" '{print $4}'> tmp")
+        mon_fichiermac=open("tmp","r")
+        mactmp = str(mon_fichiermac.read())
+        mac = mac.rstrip("\n")   
+    except:
+        logging.error(KO + "Récupération MAC")
+        countError = countError + 1
 # Récuperation du hostname
     host = ""
-    writehost = os.system("arp -a " + ip + " | awk -F\" \" '{print $1}'> tmp")
-    mon_fichierhost=open("tmp","r")
-    host = str(mon_fichierhost.read())
+    try:
+        writehost = os.system("arp -a " + ip + " | awk -F\" \" '{print $1}'> tmp")
+        mon_fichierhost=open("tmp","r")
+        host = str(mon_fichierhost.read())
+    except:
+        logging.error(KO + "Récupération MAC")
+        countError = countError + 1
 # Génération  un usID stagiaire => STG_S(numéro de semaine)_compteur sur 2 car
     nbcar = 4  
-    type = "USER"  
-    IDuser = aleatoireString(nbcar, type)
-    NumSemaine = datetime.datetime.now().strftime("%U")
-    NewUser = "STGS" + NumSemaine + "-" + str(IDuser)
-	
+    type = "USER"
+    try:
+        IDuser = aleatoireString(nbcar, type)
+        NumSemaine = datetime.datetime.now().strftime("%U")
+        NewUser = "STGS" + NumSemaine + "-" + str(IDuser)
+    except:
+        countError = countError + 1
 # Génération mot passe aléatoire => appel de la fonction chaine aleatoire complexe
     nbcar = 8  
     type = "PWD"  
-    password = aleatoireString(nbcar, type)
-    logging.info("### SUCCESS ### Génération des paramétres")
-    return password, NewUser, mac
-	
-#===================================================#
-#	INITIALISATION DE FICHIER SI NON EXISTANT
-#===================================================#
-def checkFileExistance(filePath):
     try:
-        with open(filePath, 'r') as f:
-            return True
-    except FileNotFoundError as e:
-        fichier= open(filePath, 'w')
-        fichier.close()
-
-
-#===================================================#
-#	Commandes à déployer			
-#===================================================#
-# Changement Hostname
-# On verifie que l'utilisateur ne soit pas déjà referencé dans le /etc/passwd
-# suppression ancien user/home
-# Création du compte utilisateur
-# Changement de mot de passe
-
+        password = aleatoireString(nbcar, type)
+    except:
+        countError = countError + 1
+# Gestion compteur erreurs
+    if countError == 0:
+        logging.info(OK + "Génération des paramétres")
+        return password, NewUser, mac
+    else:
+        MSG = KO + "lors de la génération des paramétres"
+        logging.info(MSG)
+        print(MSG)
 
 #===================================================#
 #	Fonction Inventaire			
 #===================================================#
 def inventaire(LigneInvent):
     try:
+        logging.info(STEP + "Inscription dans l'inventaire" + FicInventaire)
         writeInvent = open(FicInventaire,"a")	# ouverture de l'inventaire en écriture
         writeInvent.write(LigneInvent + "\n")	# édition de l'inventaire
         writeInvent.close()		# fermeture du fichier inventaire
-        logging.info("Inscription dans l'inventaire " + FicInventaire)
+        logging.info(OK + "Nouvelle entrée dans l'inventaire")
     except:
-        logging.info("Aucune inscription dans l'inventaire " + FicInventaire)
+        logging.info(KO + "Aucune inscription dans l'inventaire ")
 
 
 ##################################################################################################################
@@ -235,8 +294,6 @@ parser.add_argument('--log',
                     required=True)
 args = parser.parse_args()
 
-##################################################################################################################
-#	xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 #=======================================================#
 ### Récuperation du niveau de log
 niveau = args.log
@@ -253,27 +310,55 @@ retourfonction = aleatoireString(nbcar, type)
 ### Format de ligne de log
 logging.basicConfig(filename=FicLOG, filemode='w', format='%(asctime)s ' + str(retourfonction) +' %(message)s', level=nivLog)
 
+
+############# INITIALISATION DU LOG #################
+
+logging.info(PLEIN)
+logging.info(INTER + "     DEBUT EXECUTION DU SCRIPT    " + INTER)
+logging.info(PLEIN)
+
+##################################################################################################################
+#	INITIALISATION DE L'ENVIRONNEMENT DE TRAVAIL
+#=======================================================#
+# Vérification arborescence serveur
+MSG = STEP +  "Contrôle arborescence"
+logging.info(MSG)
+for cle,path in dicoREP.items():
+    checkRepertoireExistance(path)
+logging.info(LIGHT)
+# vérifcation que les fichiers requis sont existants, dans la négative Création de ces fichiers
+MSG = STEP +  "Contrôle des fichiers requis"
+logging.info(MSG)
+for cle,fic in dicoFIC.items():
+    checkFileExistance(fic)
+
 ##################################################################################################################
 #	SCANNER IP
 #=======================================================#
 reseau = args.reseau
+logging.info(LIGHT)
+os.system('clear')
+print(PLEIN)
+MSG = STEP + 'Démarrage du scanner IP'
+logging.info(MSG)
+print(MSG)
+print(LIGHT)
 
 # Tableau qui stockera les ip connectées 
 ipmachines = []
-logging.info("################################################################")
-logging.info('### LOGINIT ### DEMARRAGE DU SCANNER IP')
-
 # Scan du réseau plage IP [1-254]
 for ping in range(2,254):
     if ( str(reseau) != ""):
         separateur = "."
         network = separateur.join(reseau.split(separateur)[:-1]) + "."
-        #print("network:" + str(network))
         adresse = network + str(ping)
         socket.setdefaulttimeout(1)
 # Récupération des informations
         try:
             hostname, alias, listadresse = socket.gethostbyaddr(adresse)
+            MSG = INFO + adresse + ' est actif sur le réseau'
+            logging.info(MSG)
+            print(MSG)
 # Exception aucun client connecté avec IP de la plage
         except socket.herror:
             hostname = None
@@ -284,29 +369,43 @@ for ping in range(2,254):
             ipmachines.append(adresse)
     else:
         exit("Merci de renseigner le sous-réseau à reinitialiser : exemple Python3 encours.py --log=debug 192.168.1.0")
-# print(ipmachines)
 
 ##################################################################################################################
 #	TRAITEMENT CLIENT
 #=======================================================#
-# vérifcation que les fichiers requis sont existants, dans la négative Création de ces fichiers
-checkFileExistance(FicInventaire)
+
 for ip in ipmachines:
-    
-    logging.info( ip + ' ### Le PC est présent sur le réseau')
+    logging.info(PLEIN)
+    print("")
+    MSG = STEP + "TRAITEMENT DE " + ip
+    print(MSG)
+    print(LIGHT)
+    logging.info(MSG)
+    logging.info(PLEIN)
+    logging.info(STEP + "Déclenchement génération paramètres distants")
     param = parametres(ip)
 
     TXT = ""
     password = str(param[0])
     mac = str(param[2])
     userID = str(param[1])
+    logging.info(LIGHT)
+    logging.info(STEP + "Verification prérequis sécurité SSH")
     statut = sshpass(ip, TXT, mac)
+
     client = str(now) + ";" + mac + ";" + ip + ";" + userID + ";" + password
-    logging.info("################################################################")
+    logging.info(LIGHT)
     if (statut != "error"):
         sessionssh(ip, userID, password)
-        logging.info("################################################################")
+        logging.info(LIGHT)
         inventaire(str(client))
         #time.sleep(5)
-        logging.info("################################################################")
-
+        logging.info(LIGHT)
+logging.info(PLEIN)
+print(PLEIN)
+MSG = STEP + 'TRAITEMENT TERMINE'
+logging.info(MSG)
+print(MSG)
+print(PLEIN)
+print("")
+logging.info(PLEIN)
