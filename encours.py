@@ -23,6 +23,7 @@ import datetime		# Module format date & heure
 import time
 import paramiko
 
+
 ##################################################################################################################
 #	LES VARIABLES
 #=======================================================#
@@ -30,6 +31,7 @@ now = datetime.datetime.now().strftime("%d/%m/%Y_%H:%M:%S")
 DirWork = "/root/Work"
 FicLOG = DirWork + "/debug.log"
 fichiermdp = open("/root/.pwd" , "r")
+security = str(fichiermdp.read())
 FicInventaire = DirWork + "/invent.log"
 NewUser = ""
 retourfonction = ""
@@ -96,6 +98,7 @@ def sshpass(ip, TXT, mac):
             os.system(cmd)
             MSG = ip + " ### SUCCESS -Dépot de la clé publique sur le client "
             logging.info(MSG)
+            print(MSG)
             statut = "success"
         except Exception as e:
             print(e)
@@ -103,15 +106,53 @@ def sshpass(ip, TXT, mac):
             statut = "error"
         return statut
 
-def sessionssh(ip):
-    # ssh = paramiko.SSHClient()
-    # ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    # ssh.load_host_keys(os.path.expanduser(os.path.join("~", ".ssh", "known_hosts")))
-    # ssh.connect(ip, username="root", password=fichiermdp)
-    cmd = "ssh root@" + ip + " < /partage/deploy.py &"
-    os.system(cmd)
-    # ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('ls')
-    # ssh.close()
+def sessionssh(ip, userID, password):
+### ouverture de la session ssh
+    try:
+        ssh = paramiko.SSHClient()
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        ssh.load_host_keys(os.path.expanduser(os.path.join("~", ".ssh", "known_hosts")))
+        ssh.connect(ip, username="root", password=str(security))
+        MSG = "### SUCCESS ### Connexion ssh vers " + ip
+        logging.info(MSG)
+        print(MSG)
+        sshsuccess = True
+    except Exception as e:
+        print(e)
+        logging.warning("### ERROR ### " + str(e))
+        sshsuccess = False
+### ouverture de la session sftp et copy du script de deploiement
+    if (sshsuccess == True):
+        try:
+            sftp = ssh.open_sftp()
+            logging.info("### SUCCESS ### Ouverture session sftp")
+            sftp.put('/partage/deploy.py', '/tmp/deploy.py')
+            logging.info("### SUCCESS ### Dépôt du script python sur le client")
+            sftp.close()
+            logging.info("### SUCCESS ### Fermeture session sftp")
+            sftpsuccess = True
+            print("### SUCCESS ### Déploiement du script sur le client")
+        except Exception as e:
+            print(e)
+            logging.warning("### ERROR ### " + str(e))
+            sftpsuccess = False
+### exécution du script de déploiement
+        if (sftpsuccess == True):
+            try:
+                stdin, stdout, stderr = ssh.exec_command('python /tmp/deploy.py --userID ' + userID + ' --pwd ' + password)
+                for line in stdout.read().splitlines():
+                    #print(line)
+                    sortieDist = (line.decode("utf-8", "ignore"))
+                    print(sortieDist)
+                    logging.info(sortieDist)
+                logging.info("### SUCCESS ### Exécution du script de déploiement")
+                ssh.close()
+                logging.info("### SUCCESS ### Fermeture de la session ssh")
+            except Exception as e:
+                print(e)
+                logging.warning("### ERROR ### " + str(e))
+                success = False	
+    
         
 #===================================================#
 #	Fonction paramètres à déployer			
@@ -122,18 +163,17 @@ def parametres (ip):
     mac = ""
     writemac = os.system("arp -a " + ip + " | awk -F\" \" '{print $4}'> tmp")
     mon_fichiermac=open("tmp","r")
-    mac = str(mon_fichiermac.read())
+    mactmp = str(mon_fichiermac.read())
+    mac = mac.rstrip("\n")
 # Récuperation du hostname
     host = ""
     writehost = os.system("arp -a " + ip + " | awk -F\" \" '{print $1}'> tmp")
     mon_fichierhost=open("tmp","r")
     host = str(mon_fichierhost.read())
-    print("ici : " + host + mac)
 # Génération  un usID stagiaire => STG_S(numéro de semaine)_compteur sur 2 car
     nbcar = 4  
     type = "USER"  
     IDuser = aleatoireString(nbcar, type)
-    print(IDuser)
     NumSemaine = datetime.datetime.now().strftime("%U")
     NewUser = "STGS" + NumSemaine + "-" + str(IDuser)
 	
@@ -141,7 +181,7 @@ def parametres (ip):
     nbcar = 8  
     type = "PWD"  
     password = aleatoireString(nbcar, type)
-	
+    logging.info("### SUCCESS ### Génération des paramétres")
     return password, NewUser, mac
 	
 #===================================================#
@@ -170,9 +210,13 @@ def checkFileExistance(filePath):
 #	Fonction Inventaire			
 #===================================================#
 def inventaire(LigneInvent):
-    writeInvent = open(FicInventaire,"a")	# ouverture de l'inventaire en écriture
-    writeInvent.write(LigneInvent + "\n")	# édition de l'inventaire
-    writeInvent.close()		# fermeture du fichier inventaire
+    try:
+        writeInvent = open(FicInventaire,"a")	# ouverture de l'inventaire en écriture
+        writeInvent.write(LigneInvent + "\n")	# édition de l'inventaire
+        writeInvent.close()		# fermeture du fichier inventaire
+        logging.info("Inscription dans l'inventaire " + FicInventaire)
+    except:
+        logging.info("Aucune inscription dans l'inventaire " + FicInventaire)
 
 
 ##################################################################################################################
@@ -197,7 +241,7 @@ args = parser.parse_args()
 ### Récuperation du niveau de log
 niveau = args.log
 nivLog = getattr(logging, niveau.upper(), None)
-print(nivLog)
+
 if ( nivLog == None ):
     raise ValueError('Niveau de log invalide, vous avez saisi : %s' % niveau + '\n usage : encours.py --log=debug|info|warn --reseau=192.168.1.0')
 
@@ -245,27 +289,24 @@ for ping in range(2,254):
 ##################################################################################################################
 #	TRAITEMENT CLIENT
 #=======================================================#
+# vérifcation que les fichiers requis sont existants, dans la négative Création de ces fichiers
 checkFileExistance(FicInventaire)
-
 for ip in ipmachines:
-    client = str(now) 
+    
     logging.info( ip + ' ### Le PC est présent sur le réseau')
     param = parametres(ip)
 
-    dictionnaire = {}
-    dictionnaire["AdresseIP"] = ip
-    dictionnaire["userid"] = str(param[1])
-    dictionnaire["password"] = str(param[0])
-    dictionnaire["mac"] = str(param[2])
-    for cle,valeur in dictionnaire.items():
-        client = client + ";" + valeur 
-        print(client)
     TXT = ""
+    password = str(param[0])
     mac = str(param[2])
+    userID = str(param[1])
     statut = sshpass(ip, TXT, mac)
+    client = str(now) + ";" + mac + ";" + ip + ";" + userID + ";" + password
+    logging.info("################################################################")
     if (statut != "error"):
-        #sessionssh(ip)
+        sessionssh(ip, userID, password)
+        logging.info("################################################################")
         inventaire(str(client))
-        logging.info("###")
+        #time.sleep(5)
+        logging.info("################################################################")
 
-logging.info("################################################################")
