@@ -22,19 +22,29 @@ from string import punctuation, ascii_letters, digits, ascii_uppercase	# module 
 import datetime		# Module format date & heure
 import time
 import paramiko
-
+import qrcode
+from PIL import ImageDraw, Image, ImageFont
 
 ##################################################################################################################
 #	LES VARIABLES
 #=======================================================#
+### VARIABLES GLOBALES
+NewUser = ""
+retourfonction = ""
+resultat = ""
+now = datetime.datetime.now().strftime("%d/%m/%Y_%H:%M:%S")
+NumSemaine = datetime.datetime.now().strftime("%U")
+
 ### REPERTOIRES
 DirWork = "/root/Work"
 LOG = DirWork + "/log"
-DirStagiaire = DirWork + "/FicSTGS"
+DirStagiaire = DirWork + "/FormLinux_S" + NumSemaine
+DirPC = DirWork + "/FichePC"
 dicoREP = {}
-dicoREP["DirWork"] = DirWork
-dicoREP["DirStagiaire"] = DirStagiaire
-dicoREP["LOG"] = LOG
+dicoREP["Environnement de travail"] = DirWork
+dicoREP["Repertoire Fiche Stagiaire"] = DirStagiaire
+dicoREP["Répertoire des Logs"] = LOG
+dicoREP["Répertoire Fiche PC"] = DirPC
 
 ### FICHIERS OUTPUT
 FicLOG = DirWork + "/debug.log"
@@ -50,21 +60,18 @@ dicoFIC =  {}
 dicoFIC["mdp"] = fichiermdp
 dicoFIC["inventaire"] = FicInventaire
 
-### VARIABLES GLOBALES
-NewUser = ""
-retourfonction = ""
-resultat = ""
-
 # CADRE & PREFIXE LOG
 PLEIN = "################################################################"
 LIGHT = "================================================================"
+DEMI = "#########################################"
 INTER = "###############"
 OK = " ##  OK  ## *** LOC  - "
 KO = " ##  KO  ## *** LOC  - "
 SO = " ##  SO  ## *** LOC  - "
 INFO = " ## INFO ## *** LOC  - "
 STEP = " ## STEP ## *** LOC  - "
-now = datetime.datetime.now().strftime("%d/%m/%Y_%H:%M:%S")
+
+
 
 ##############################################################################################
 #################### 		LES FONCTIONS
@@ -99,6 +106,19 @@ def checkFileExistance(fic):
         MSG = OK + fic + " existant"
         logging.info(MSG)    
 
+#===================================================#
+#	RéINITIALISATION DU REPERTOIRE FICHES STAGIAIRES
+#===================================================#
+def cleanfiche(repertoire):
+    try:
+        files = os.listdir(repertoire)
+        logging.info(OK + "Réinitialisation répertoire fiche stagiaire")
+        for filename in os.listdir(repertoire) :
+            os.remove(repertoire + "/" + filename)
+            
+    except:
+        logging.error(Ko + "PB de Réinit. répertoire fiche stagiaire")
+	
 #===================================================#
 #	FONCTION DE GENERATION DE CHAINE ALEATOIRE
 #===================================================#
@@ -226,7 +246,7 @@ def parametres (ip):
         writemac = os.system("arp -a " + ip + " | awk -F\" \" '{print $4}'> tmp")
         mon_fichiermac=open("tmp","r")
         mactmp = str(mon_fichiermac.read())
-        mac = mac.rstrip("\n")   
+        mac = mactmp.rstrip("\n")   
     except:
         logging.error(KO + "Récupération MAC")
         countError = countError + 1
@@ -235,7 +255,8 @@ def parametres (ip):
     try:
         writehost = os.system("arp -a " + ip + " | awk -F\" \" '{print $1}'> tmp")
         mon_fichierhost=open("tmp","r")
-        host = str(mon_fichierhost.read())
+        hosttmp = str(mon_fichierhost.read())
+        host = hosttmp.rstrip("\n")
     except:
         logging.error(KO + "Récupération MAC")
         countError = countError + 1
@@ -244,7 +265,6 @@ def parametres (ip):
     type = "USER"
     try:
         IDuser = aleatoireString(nbcar, type)
-        NumSemaine = datetime.datetime.now().strftime("%U")
         NewUser = "STGS" + NumSemaine + "-" + str(IDuser)
     except:
         countError = countError + 1
@@ -258,7 +278,7 @@ def parametres (ip):
 # Gestion compteur erreurs
     if countError == 0:
         logging.info(OK + "Génération des paramétres")
-        return password, NewUser, mac
+        return password, NewUser, mac, host
     else:
         MSG = KO + "lors de la génération des paramétres"
         logging.info(MSG)
@@ -277,6 +297,51 @@ def inventaire(LigneInvent):
     except:
         logging.info(KO + "Aucune inscription dans l'inventaire ")
 
+def CreationFicheStagiaire(userID, password, mac, host):
+    try:
+        fiche = DirStagiaire + "/" + userID
+        fichier= open(fiche, 'w')
+        logging.info(OK + "Création de la fiche" + userID)
+        try:
+            fichier.write("\n" + PLEIN + "\n \n")
+            fichier.write("		Formation Linux Semaine " + NumSemaine + "\n \n")
+            fichier.write(LIGHT + "\n \n")
+            fichier.write("	Hostname	=	" + host + "\n")
+            fichier.write("	MAC		=	" + mac + "\n")
+            fichier.write("	Login stagiaire	=	" + userID + "\n")
+            fichier.write("	Mot de passe	=	" + password + "\n \n")
+            fichier.write("\n" + PLEIN + "\n \n")
+            fichier.close()
+            logging.info(OK + "Edition de la fiche")
+        except:
+            logging.info(KO + "Lors de l'édition de la fiche stagiaire")
+    except:
+        logging.info(KO + "Lors de la création de la fiche stagiaire")
+
+def CreationFichePC(mac, host):
+    NameJPGMac = mac.replace(':', '') + ".jpg"
+    print(host)
+    FilePath = DirPC + "/" + NameJPGMac
+    if not os.path.isfile(FilePath):
+        try:
+            #qrcode.add_data(host)
+            image = qrcode.make(mac)
+            #image.save(FilePath)  
+            typefont = '/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf'
+            fnt=ImageFont.truetype(typefont, 40)
+            draw = ImageDraw.Draw(image)
+            qr_x, qr_y = image.size
+            draw.text((qr_x/4,0), 
+            text=host,
+            font=fnt,
+            fill=0)
+            image.save(FilePath) 
+            logging.info(OK + "Création de la fiche " + NameJPGMac)
+        except Exception as e:
+            logging.error(KO + str(e))
+    else:
+        MSG = OK + NameJPGMac + " existant sous " + DirPC
+        logging.info(MSG)    
 
 ##################################################################################################################
 #	Définition des arguments
@@ -326,11 +391,16 @@ logging.info(MSG)
 for cle,path in dicoREP.items():
     checkRepertoireExistance(path)
 logging.info(LIGHT)
+
 # vérifcation que les fichiers requis sont existants, dans la négative Création de ces fichiers
 MSG = STEP +  "Contrôle des fichiers requis"
 logging.info(MSG)
 for cle,fic in dicoFIC.items():
     checkFileExistance(fic)
+	
+# Suppression des anciennes fiches stagiaires
+repertoire = DirStagiaire
+cleanfiche(repertoire)
 
 ##################################################################################################################
 #	SCANNER IP
@@ -346,6 +416,7 @@ print(LIGHT)
 
 # Tableau qui stockera les ip connectées 
 ipmachines = []
+Client = []
 # Scan du réseau plage IP [1-254]
 for ping in range(2,254):
     if ( str(reseau) != ""):
@@ -375,6 +446,7 @@ for ping in range(2,254):
 #=======================================================#
 
 for ip in ipmachines:
+
     logging.info(PLEIN)
     print("")
     MSG = STEP + "TRAITEMENT DE " + ip
@@ -389,16 +461,20 @@ for ip in ipmachines:
     password = str(param[0])
     mac = str(param[2])
     userID = str(param[1])
+    host = str(param[3])
     logging.info(LIGHT)
     logging.info(STEP + "Verification prérequis sécurité SSH")
     statut = sshpass(ip, TXT, mac)
 
-    client = str(now) + ";" + mac + ";" + ip + ";" + userID + ";" + password
+    client = str(now) + ";" + host + ";" + mac + ";" + ip + ";" + userID + ";" + password
     logging.info(LIGHT)
     if (statut != "error"):
         sessionssh(ip, userID, password)
         logging.info(LIGHT)
         inventaire(str(client))
+        CreationFicheStagiaire(userID, password, mac, host)
+        CreationFichePC(mac, host)
+
         #time.sleep(5)
         logging.info(LIGHT)
 logging.info(PLEIN)
