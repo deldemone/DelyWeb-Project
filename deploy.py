@@ -47,10 +47,10 @@ def suppOldUser():
             userOld = separateur.join(ligne.split(separateur)[0:1])
             MSG = OK + "Un user à supprimer : " + str(userOld)
             logging.info(MSG)
-            cmd = "userdel -f " + userOld
+            cmd = "pkill -u "  + userOld + " ; userdel -f " + userOld
             try:
                 os.system(cmd)
-                MSG = OK + "Ancien utilisateur " + userOld + " a été supprimé."
+                MSG = OK + "Fermeture session " + userOld + ".\n" + OK + "Ancien utilisateur " + userOld + " a été supprimé."
                 print(MSG)
                 logging.info(MSG)
                 shutil.rmtree("/home/" + userOld)
@@ -72,9 +72,9 @@ def suppOldUser():
 # Création du nouvel utilisateur et de son home
 def addNewUser(userID, password):
     try:
-        cmd = 'useradd -m ' + userID + '; echo \"' + userID + '\":' + password + ' | chpasswd' 
+        cmd = 'useradd -m ' + userID + '; echo \"' + userID + '\":' + password + ' | chpasswd ; chsh -s /bin/bash ' + userID 
         os.system(cmd)
-        MSG = OK + "Nouvel utilisateur " + userID + " a été créé.\n" + OK + "/Home " + userID + " a été créé.\n" + OK + "PWD sécurisé déployé pour " + userID + ".\n"
+        MSG = OK + "Nouvel utilisateur " + userID + " a été créé.\n" + OK + "/Home " + userID + " a été créé.\n" + OK + "PWD sécurisé déployé pour " + userID + ".\n" + OK + "Changement du shell par défaut en bash"
         print(MSG)
     except Exception as e:
         print(e)
