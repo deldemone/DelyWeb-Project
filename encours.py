@@ -7,7 +7,7 @@ Nom :			 RenewDomain.py
 Exécution :		RenewDomain.py --debug info|warn|debug --reseau 192.168.122.0
 
 Action :		Permet de scanner le reseau d'un domaine 
-				De parametrer les comptes utilisateurs à distance ( )
+				De parametrer les comptes utilisateurs à distance 
 				De maintenir un inventaire du domaine
 				De créer des fiches utilisateurs (Login, mot de passe, hostname)
 				De créer des QRcode à partir de l'adresse mac à apposer sur les postes de travail
@@ -52,12 +52,14 @@ DossierWork = "/root/Work"
 LOG = "/var/log"
 RepertoireFicheUtilisateur = DossierWork + "/UserSemaine" + NumSemaine
 RepertoireFichePC = DossierWork + "/FichePC"
+RepertoireInventaire = DossierWork + "/Inventaire"
 """ Création du dictionnaire des répertoires qui permettra de créer les répertoires inexistants Fonction : checkRepertoireExistance """
 dicoRepertoires = {}
 dicoRepertoires["Environnement de travail"] = DossierWork
 dicoRepertoires["Repertoire Fiche Utilisateur"] = RepertoireFicheUtilisateur
 dicoRepertoires["Répertoire des Logs"] = LOG
 dicoRepertoires["Répertoire Fiche PC"] = RepertoireFichePC
+dicoRepertoires["Répertoire des Inventaires"] = RepertoireInventaire
 
 ### LES FICHIERS INPUT
 fichiermdp = "/root/.pwd"
@@ -66,12 +68,14 @@ security = str(openFichierMDP.read())
 
 ### FICHIERS OUTPUT
 FichierLOG = LOG + "/RenewDomain.log"
-FichierInventaire = DossierWork + "/inventaire.log"
-""" Création du dictionnaire des fichiers qui permettra de créer les fichiers inexistants Fonction : checkFileExistance """
+InventaireUtilisateur = RepertoireInventaire + "/InventaireUtilisateurS" + NumSemaine
+InventaireDomaine = RepertoireInventaire + "/InventaireDomaine"
+""" Création du dictionnaire des fichiers qui permettra de créer les fichiers inexistants ainsi ques leurs entêtes Fonction : checkFileExistance """
 dicoFichier =  {}
-dicoFichier["debug"] = FichierLOG
-dicoFichier["mdp"] = fichiermdp
-dicoFichier["inventaire"] = FichierInventaire
+dicoFichier[FichierLOG] = ""
+dicoFichier[InventaireUtilisateur] = "Horodatage création;Hostname;UserID;password"
+dicoFichier[InventaireDomaine] = "Horodatage import;Hostname;Mac;Information Système"
+
 
 
 # CADRE & PREFIXE LOG
@@ -96,7 +100,7 @@ STEP = REQ + " ## STEP ## *** LOC  - "
 #===================================================#
 #	INITIALISATION DES REPERTOIRES SI NON EXISTANT
 #===================================================#
-""" Vérification de l'existance des répoertoires utiles et création si non existant """
+""" Vérification de l'existance des répertoires utiles et création si non existant """
 def checkRepertoireExistance(path):
     if not os.path.exists(path):
         try:
@@ -113,14 +117,15 @@ def checkRepertoireExistance(path):
 #	INITIALISATION DES FICHIERS SI NON EXISTANT
 #===================================================#
 """ Vérification de l'existance des répertoires utiles et création si non existant """
-def checkFileExistance(fic):
+def checkFileExistance(cle, fic):
     if not os.path.isfile(fic):
         try:
             fichier= open(fic, 'w')
+            fichier.write(cle + "\n")	
             logging.info(OK + "Création " + fic)
             fichier.close()
-        except CreateFileError as e:
-            logging.error(KO + e)
+        except Exception as e:
+            logging.error(REQ + KO + str(e))
     else:
         MSG = OK + fic + " existant"
         logging.info(MSG)    
@@ -238,11 +243,12 @@ def parametres (ip, REQ):
 #	FONCTION SSHPASS
 #===================================================#
 def sshpass(ip, TXT, mac, REQ):
-    """ Permet de déployer la clé publique du serveur sur le client distant 
+    """ La fonction verifie que l'adresse mac ne soit pas déjà référencé dans l'inventaire
         si cet échange n'a pas déjà été effectué, 
-        si le statut retourné est error le traitement de ce client sera annulé
+        => déploiement de la clé publique du serveur sur le client distant 
+        si le statut retourné est error le traitement de ce client sera annulé.
     """
-    readInvent = open(FichierInventaire,"r")	# ouverture de l'inventaire en lecture seule
+    readInvent = open(InventaireDomaine,"r")	# ouverture de l'inventaire en lecture seule
     lignes = readInvent.readlines()
 	# afin de ne pas tenter inutilement de redéposer le certif du serveur : on verifie dans l'inventaire
     present = False
@@ -250,10 +256,10 @@ def sshpass(ip, TXT, mac, REQ):
         if mac in ligne:
             logging.info(REQ + OK + "La clé du serveur déja présente sur client")
             present = True
-            statut = "ok"
+            statut = "MacPresentInventaire"
             break
     if (present == False):
-        logging.info(REQ + INFO + " ### Nouvelle clé du serveur à déployer")
+        logging.info(REQ + INFO + "Nouvelle clé du serveur à déployer")
         cmd= ("sshpass -f /root/.pwd ssh-copy-id -i /root/.ssh/id_rsa.pub root@" + ip +"; exit")
         try:
             #ssh = paramiko.SSHClient() 
@@ -317,9 +323,11 @@ def sessionssh(ip, userID, password, REQ):
                 stdin, stdout, stderr = ssh.exec_command('python /tmp/deploy.py --userID ' + userID + ' --pwd ' + password)
                 for line in stdout.read().splitlines():
                     sortieDist = (line.decode("utf-8", "ignore"))
-                    print(sortieDist)
-                    if sortieDist != "":
+                    if sortieDist != "" and "System" not in sortieDist:
+                        print(sortieDist)
                         logging.info(REQ + sortieDist)
+                    if "System" in sortieDist:
+                        system = sortieDist
                 logging.info(REQ + OK + "Exécution du script de déploiement terminée")
             except Exception as e:
                 print(e)
@@ -331,32 +339,42 @@ def sessionssh(ip, userID, password, REQ):
     except Exception as e:
         print(e)
         logging.error(REQ + KO + str(e))
-    logging.info(LIGHT)    
+    logging.info(LIGHT)
+    return system    
 
 """"""""""""""""""""""""""""""""""""""""""""""""
 """ GENERATION DES FICHIERS DE SORTIE """
 """"""""""""""""""""""""""""""""""""""""""""""""
 #===================================================#
-#	FONCTION INVENTAIRE			
+#	FONCTION DES INVENTAIRES 
 #===================================================#
-def inventaire(LigneInvent, REQ):
+def Inventaire(LigneInvent, typeInvent, mac, REQ):
     try:
-        logging.info(REQ + STEP + "Inscription dans l'inventaire" + FichierInventaire)
-        writeInvent = open(FichierInventaire,"a")	# ouverture de l'inventaire en écriture
-        writeInvent.write(LigneInvent + "\n")	# édition de l'inventaire
-        writeInvent.close()		# fermeture du fichier inventaire
-        logging.info(REQ + OK + "Nouvelle entrée dans l'inventaire")
+        OpenInventaire = open(typeInvent,"r")	# ouverture de l'inventaire en lecture
+        lignesInvent = OpenInventaire.readlines()
+        Present = False
+        for ligne in lignesInvent:		
+            if mac in ligne:
+                Present = True
+        if Present == False:
+            logging.info(REQ + STEP + "Inscription dans l'inventaire" + typeInvent)
+            writeInvent = open(typeInvent,"a")	# ouverture de l'inventaire en écriture
+            writeInvent.write(LigneInvent + "\n")	# édition de l'inventaire
+            writeInvent.close()		# fermeture du fichier inventaire
+            logging.info(REQ + OK + "Nouvelle entrée dans l'inventaire" + typeInvent)
+        else:
+            logging.info(REQ + OK + "Entrée déjà présente dans inventaire" + typeInvent)
     except:
-        logging.info(REQ + KO + "Aucune inscription dans l'inventaire ")
+        logging.info(REQ + KO + "Aucune inscription dans l'inventaire " + typeInvent)
 
 #===================================================#
 #	CREATION FICHE UTILISATEUR			
 #===================================================#
 
-def CreationFicheUtilisateur(userID, password, mac, host, REQ):
+def CreationFicheUtilisateur(userID, password, host, REQ):
     """ Création de la fiche à communiquer à l'utilisateur 
         qui précise les indication suivante
-        Hostname, Mac, Login utilisateur, Mdp utilisateur
+        Hostname, Login utilisateur, Mdp utilisateur
     """
     try:
         fiche = RepertoireFicheUtilisateur + "/" + userID
@@ -366,7 +384,6 @@ def CreationFicheUtilisateur(userID, password, mac, host, REQ):
             fichier.write("		Formation Linux Semaine " + NumSemaine + "\n \n")
             fichier.write(LIGHT + "\n \n")
             fichier.write("	Hostname	=	" + host + "\n")
-            fichier.write("	MAC		=	" + mac + "\n")
             fichier.write("	Login utilisateur	=	" + userID + "\n")
             fichier.write("	Mot de passe	=	" + password + "\n \n")
             fichier.write("\n" + PLEIN + "\n \n")
@@ -380,7 +397,7 @@ def CreationFicheUtilisateur(userID, password, mac, host, REQ):
 #===================================================#
 #	CREATION FICHE PC = QRCODE			
 #===================================================#    
-def CreationFichePC(mac, host,REQ):
+def QRcodePC(mac, host, REQ):
     """ Création de la fiche PC 
         génération d'un QRcode à partir de l'adresse mac
         on ajoute également le hostname au dessus de ce qrcode
@@ -491,7 +508,7 @@ logging.info(PLEIN)
 logging.info(STEP +  "Contrôle des fichiers requis")
 logging.info(LIGHT)
 for cle,fic in dicoFichier.items():
-    checkFileExistance(fic)
+    checkFileExistance(fic, cle)
 	
 # création du lien symbolique du log
 os.system("ln -s " + FichierLOG + " " + DossierWork)
@@ -614,8 +631,7 @@ for ip in ipmachines:
     logging.info(REQ + STEP + "Verification prérequis sécurité SSH")
 
 
-    # Initialisation de la future ligne d'inventaire
-    client = str(now) + ";" + host + ";" + mac + ";" + ip + ";" + userID + ";" + password
+
 	
     # Appel de la fonction sshpass
     """ Permet de déployer la clé publique du serveur sur le client distant 
@@ -623,22 +639,30 @@ for ip in ipmachines:
         si le statut retourné est error le traitement de ce client sera annulé
     """
     TXT = ""
-    statut = sshpass(ip, TXT, mac, REQ)
+    StatutSSHpass = sshpass(ip, TXT, mac, REQ)
     # Appel de la fonction sessionssh
-    if (statut != "error"):
+    if (StatutSSHpass != "error"):
         logging.info(REQ + STEP + "Initialisation de la connexion ssh")
         # Ouverture de la session ssh sur le PC Distant + depot du script distant + ececution du script
-        sessionssh(ip, userID, password, REQ)
-        # Création de la nouvelle entrée inventaire
-        inventaire(str(client), REQ)
+        infoSystemDistant = sessionssh(ip, userID, password, REQ)
+        separateur = " "
+        system = separateur.join(infoSystemDistant.split(separateur)[-1:])
+
+        # Initialisation des lignes des Inventaires
+        dicoInventaires ={}
+        dicoInventaires[InventaireUtilisateur] = str(now) + ";" + host + ";" + userID + ";" + password
+        dicoInventaires[InventaireDomaine] = str(now) + ";" + host + ";" + mac + ";" + system
+        for TypeInventaire,chaineInventaire in dicoInventaires.items():
+            Inventaire(str(chaineInventaire), str(TypeInventaire), mac, REQ)
+
         # Création de la fiche Utilisateur
-        FicheUtilisateur = CreationFicheUtilisateur(userID, password, mac, host, REQ)
+        FicheUtilisateur = CreationFicheUtilisateur(userID, password, host, REQ)
         if FicheUtilisateur != "":
             PRINT = INFO + "Création de la fiche utilisateur : " + str(FicheUtilisateur)
             print(PRINT)
             logging.info(REQ + PRINT)
         # Création de la fiche PC
-        FichePC = CreationFichePC(mac, host, REQ)
+        FichePC = QRcodePC(mac, host, REQ)
         if FichePC != "":
             PRINT = INFO + "Un nouveau QRcode PC a été généré : " + str(FichePC)
             print(PRINT)
@@ -646,10 +670,16 @@ for ip in ipmachines:
         # Suppression des fichiers temporaires
         extension = "*.tmp"
         cleanWork(extension, REQ) 
-        logging.info(REQ + OK + " Les fichiers temporaires " + extension + " ont été supprimés") 
-
+        logging.info(REQ + OK + "Les fichiers temporaires " + extension + " ont été supprimés") 
+		
+# Affichage de l'arborescence
+print(" ")
+print(STEP + "AFFICHAGE ARBORESCENCE")
+print(LIGHT)
+os.system("tree " + DossierWork)
        
 # Sortie console
+print (" ")
 print(PLEIN)
 PRINT = STEP + 'TRAITEMENT TERMINE'
 print(PRINT)
@@ -660,4 +690,4 @@ print("")
 logging.info(PLEIN)
 logging.info(PRINT)
 logging.info(PLEIN)
-
+ 
