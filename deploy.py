@@ -15,8 +15,9 @@ __status__ = "En cours de rédaction"
 
 import os
 import shutil
-import logging
 import argparse
+import sys
+import platform
 
 ########################################################################
 ####################		LES VARIABLES			
@@ -100,11 +101,13 @@ def addNewUser(userID, password):
         print(e)
         print(KO + "Un pb est survenu lors de la suppression ancien user")
 
-print(STEP + "Exécution du script de déploiement")
 
 
 ########################################################################
 ####################		APPEL DES FONCTIONS			
 ########################################################################
+print(STEP + "Exécution du script de déploiement")
 suppOldUser()
 addNewUser(userID, password)
+# Extraction des informations système
+print(INFO + "System = " + str(platform.platform()))
