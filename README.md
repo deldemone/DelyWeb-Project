@@ -1,12 +1,8 @@
 
 Auteur : Delphine Durand
-
 Date de création : 18/01/2021
-
 Dernière modification : 06/02/2021
-
 Version de Python : 3.7.3
-
 Créé sur Linux pour environnement Linux Debian
 
 
