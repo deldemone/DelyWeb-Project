@@ -17,9 +17,7 @@ Il a été codé dans le cadre du projet 6 : Participez à la vie de la communau
 #### Description
 
 Dans le cadre de l'association "A fond Linux", nous sommes amenés chaque fin de semaine à reinitialiser tous les postes du parc informatique et de les préparer pour l'arrivée de nouveaux apprenants.
-
 Ce script permet d'automatiser la configuration de ces postes et la création des comptes utilisateurs à distance
-
 Ce script peut être appelé manuellement ou via un cron defini dans le crontab
 
 
