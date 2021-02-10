@@ -257,7 +257,7 @@ def sessionssh(ip, userID, password, REQ):
                 stdin, stdout, stderr = ssh.exec_command('python3 /tmp/deploy.py --userID ' + userID + ' --pwd ' + password)
                 for line in stdout.read().splitlines():
                     sortieDist = (line.decode("utf-8", "ignore"))
-                    print("sortiedist = " + sortieDist)
+                    #print("sortiedist = " + sortieDist)
                     if sortieDist != "" and "System" not in sortieDist:
 						# Sortie console
                         print(sortieDist)
