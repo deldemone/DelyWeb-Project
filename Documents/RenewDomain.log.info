@@ -1,0 +1,102 @@
+2021-02-10 12:45:01,063  ################################################################
+2021-02-10 12:45:01,063  ###############     DEBUT EXECUTION DU SCRIPT    ###############
+2021-02-10 12:45:01,063  ################################################################
+2021-02-10 12:45:01,063   ## STEP ## *** LOC  - Contrôle arborescence
+2021-02-10 12:45:01,063  ================================================================
+2021-02-10 12:45:01,063   ##  OK  ## *** LOC  - /root/Work existant
+2021-02-10 12:45:01,063   ##  OK  ## *** LOC  - /root/Work/UserSemaine06 existant
+2021-02-10 12:45:01,063   ##  OK  ## *** LOC  - /var/log existant
+2021-02-10 12:45:01,064   ##  OK  ## *** LOC  - /root/Work/QRcodePC existant
+2021-02-10 12:45:01,064   ##  OK  ## *** LOC  - /root/Work/Inventaire existant
+2021-02-10 12:45:01,064  ################################################################
+2021-02-10 12:45:01,064   ## STEP ## *** LOC  - Contrôle des fichiers requis
+2021-02-10 12:45:01,064  ================================================================
+2021-02-10 12:45:01,064   ##  OK  ## *** LOC  - /var/log/RenewDomain.log existant
+2021-02-10 12:45:01,064   ##  OK  ## *** LOC  - /root/Work/Inventaire/InventaireUtilisateurS06 existant
+2021-02-10 12:45:01,064   ##  OK  ## *** LOC  - /root/Work/Inventaire/InventaireDomaine existant
+2021-02-10 12:45:01,067   ##  OK  ## *** LOC  - Suppression anciennes fiches utilisateur
+2021-02-10 12:45:01,070  ################################################################
+2021-02-10 12:45:01,070   ## STEP ## *** LOC  - Démarrage du scanner IP
+2021-02-10 12:45:01,071   ## INFO ## *** LOC  - 192.168.122.3 est actif sur le réseau
+2021-02-10 12:45:01,071   ## INFO ## *** LOC  - 192.168.122.4 est actif sur le réseau
+2021-02-10 12:45:01,120  ################################################################
+2021-02-10 12:45:01,120  REQ00702 ## STEP ## *** LOC  - TRAITEMENT DE 192.168.122.3
+2021-02-10 12:45:01,120  ================================================================
+2021-02-10 12:45:01,120  REQ00702 ## STEP ## *** LOC  - Déclenchement génération paramètres distants
+2021-02-10 12:45:01,130  REQ00702 ##  OK  ## *** LOC  - Génération des paramétres
+2021-02-10 12:45:01,130  ================================================================
+2021-02-10 12:45:01,131  REQ00702 ## STEP ## *** LOC  - Verification prérequis sécurité SSH
+2021-02-10 12:45:01,131  REQ00702 ##  OK  ## *** LOC  - La clé du serveur déja présente sur client
+2021-02-10 12:45:01,131  REQ00702 ## STEP ## *** LOC  - Initialisation de la connexion ssh
+2021-02-10 12:45:01,142  Connected (version 2.0, client OpenSSH_7.9p1)
+2021-02-10 12:45:01,210  Authentication (publickey) successful!
+2021-02-10 12:45:01,211  REQ00702 ##  OK  ## *** LOC  - Connexion ssh vers 192.168.122.3
+2021-02-10 12:45:01,211  ================================================================
+2021-02-10 12:45:01,211  REQ00702 ## STEP ## *** LOC  - Dépôt du script via le SFTP
+2021-02-10 12:45:01,284  [chan 0] Opened sftp connection (server version 3)
+2021-02-10 12:45:01,290  REQ00702 ##  OK  ## *** LOC  - Dépôt du script python sur le client
+2021-02-10 12:45:01,290  [chan 0] sftp session closed.
+2021-02-10 12:45:01,292  ================================================================
+2021-02-10 12:45:01,420  REQ00702 ## STEP ## *** DIST - Exécution du script de déploiement
+2021-02-10 12:45:01,420  REQ00702 ##  OK  ## *** DIST - Un user à supprimer : USERS006-0382
+2021-02-10 12:45:01,421  REQ00702 ##  OK  ## *** DIST - Fermeture session USERS006-0382.
+2021-02-10 12:45:01,421  REQ00702 ##  OK  ## *** DIST - Ancien utilisateur USERS006-0382 a été supprimé.
+2021-02-10 12:45:01,422  REQ00702 ##  OK  ## *** DIST - /home de l'ancien utilisateur USERS006-0382 a été supprimé.
+2021-02-10 12:45:01,422  REQ00702 ##  OK  ## *** DIST - Nouvel utilisateur USERS006-0590 a été créé.
+2021-02-10 12:45:01,423  REQ00702 ##  OK  ## *** DIST - /Home USERS006-0590 a été créé.
+2021-02-10 12:45:01,423  REQ00702 ##  OK  ## *** DIST - PWD sécurisé déployé pour USERS006-0590.
+2021-02-10 12:45:01,424  REQ00702 ##  OK  ## *** DIST - Changement du shell par défaut en bash
+2021-02-10 12:45:01,424  REQ00702 ##  OK  ## *** LOC  - Exécution du script de déploiement terminée
+2021-02-10 12:45:01,424  REQ00702 ##  OK  ## *** LOC  - Fermeture de la session ssh
+2021-02-10 12:45:01,424  ================================================================
+2021-02-10 12:45:01,425  REQ00702 ## STEP ## *** LOC  - Inscription dans /root/Work/Inventaire/InventaireUtilisateurS06
+2021-02-10 12:45:01,425  REQ00702 ##  OK  ## *** LOC  - Nouvelle entrée dans l'inventaire :
+2021-02-10 12:45:01,425  REQ00702 ##  OK  ## *** LOC  - /root/Work/Inventaire/InventaireUtilisateurS06
+2021-02-10 12:45:01,425  REQ00702 ##  OK  ## *** LOC  - Entrée déjà présente dans inventaire :
+2021-02-10 12:45:01,425  REQ00702 ##  OK  ## *** LOC  - /root/Work/Inventaire/InventaireDomaine
+2021-02-10 12:45:01,425  REQ00702 ##  OK  ## *** LOC  - Création de la fiche USERS006-0590
+2021-02-10 12:45:01,426  REQ00702 ##  OK  ## *** LOC  - 080027f4e5b2.jpg existant sous : 
+2021-02-10 12:45:01,426  REQ00702 ##  OK  ## *** LOC  - /root/Work/QRcodePC
+2021-02-10 12:45:01,427  REQ00702 ##  OK  ## *** LOC  - Les fichiers temporaires *.tmp ont été supprimés
+2021-02-10 12:45:01,428  ################################################################
+2021-02-10 12:45:01,428  REQ52146 ## STEP ## *** LOC  - TRAITEMENT DE 192.168.122.4
+2021-02-10 12:45:01,428  ================================================================
+2021-02-10 12:45:01,428  REQ52146 ## STEP ## *** LOC  - Déclenchement génération paramètres distants
+2021-02-10 12:45:01,436  REQ52146 ##  OK  ## *** LOC  - Génération des paramétres
+2021-02-10 12:45:01,436  ================================================================
+2021-02-10 12:45:01,436  REQ52146 ## STEP ## *** LOC  - Verification prérequis sécurité SSH
+2021-02-10 12:45:01,437  REQ52146 ##  OK  ## *** LOC  - La clé du serveur déja présente sur client
+2021-02-10 12:45:01,437  REQ52146 ## STEP ## *** LOC  - Initialisation de la connexion ssh
+2021-02-10 12:45:01,448  Connected (version 2.0, client OpenSSH_7.9p1)
+2021-02-10 12:45:01,530  Authentication (publickey) successful!
+2021-02-10 12:45:01,531  REQ52146 ##  OK  ## *** LOC  - Connexion ssh vers 192.168.122.4
+2021-02-10 12:45:01,531  ================================================================
+2021-02-10 12:45:01,531  REQ52146 ## STEP ## *** LOC  - Dépôt du script via le SFTP
+2021-02-10 12:45:01,618  [chan 0] Opened sftp connection (server version 3)
+2021-02-10 12:45:01,625  REQ52146 ##  OK  ## *** LOC  - Dépôt du script python sur le client
+2021-02-10 12:45:01,625  [chan 0] sftp session closed.
+2021-02-10 12:45:01,626  ================================================================
+2021-02-10 12:45:01,803  REQ52146 ## STEP ## *** DIST - Exécution du script de déploiement
+2021-02-10 12:45:01,803  REQ52146 ##  OK  ## *** DIST - Un user à supprimer : USERS006-2543
+2021-02-10 12:45:01,803  REQ52146 ##  OK  ## *** DIST - Fermeture session USERS006-2543.
+2021-02-10 12:45:01,804  REQ52146 ##  OK  ## *** DIST - Ancien utilisateur USERS006-2543 a été supprimé.
+2021-02-10 12:45:01,804  REQ52146 ##  OK  ## *** DIST - /home de l'ancien utilisateur USERS006-2543 a été supprimé.
+2021-02-10 12:45:01,805  REQ52146 ##  OK  ## *** DIST - Nouvel utilisateur USERS006-0403 a été créé.
+2021-02-10 12:45:01,805  REQ52146 ##  OK  ## *** DIST - /Home USERS006-0403 a été créé.
+2021-02-10 12:45:01,806  REQ52146 ##  OK  ## *** DIST - PWD sécurisé déployé pour USERS006-0403.
+2021-02-10 12:45:01,806  REQ52146 ##  OK  ## *** DIST - Changement du shell par défaut en bash
+2021-02-10 12:45:01,806  REQ52146 ##  OK  ## *** LOC  - Exécution du script de déploiement terminée
+2021-02-10 12:45:01,807  REQ52146 ##  OK  ## *** LOC  - Fermeture de la session ssh
+2021-02-10 12:45:01,807  ================================================================
+2021-02-10 12:45:01,807  REQ52146 ## STEP ## *** LOC  - Inscription dans /root/Work/Inventaire/InventaireUtilisateurS06
+2021-02-10 12:45:01,807  REQ52146 ##  OK  ## *** LOC  - Nouvelle entrée dans l'inventaire :
+2021-02-10 12:45:01,807  REQ52146 ##  OK  ## *** LOC  - /root/Work/Inventaire/InventaireUtilisateurS06
+2021-02-10 12:45:01,807  REQ52146 ##  OK  ## *** LOC  - Entrée déjà présente dans inventaire :
+2021-02-10 12:45:01,807  REQ52146 ##  OK  ## *** LOC  - /root/Work/Inventaire/InventaireDomaine
+2021-02-10 12:45:01,808  REQ52146 ##  OK  ## *** LOC  - Création de la fiche USERS006-0403
+2021-02-10 12:45:01,808  REQ52146 ##  OK  ## *** LOC  - 080027eafa15.jpg existant sous : 
+2021-02-10 12:45:01,808  REQ52146 ##  OK  ## *** LOC  - /root/Work/QRcodePC
+2021-02-10 12:45:01,808  REQ52146 ##  OK  ## *** LOC  - Les fichiers temporaires *.tmp ont été supprimés
+2021-02-10 12:45:01,817  ################################################################
+2021-02-10 12:45:01,817   ## STEP ## *** LOC  - TRAITEMENT TERMINE
+2021-02-10 12:45:01,817  ################################################################

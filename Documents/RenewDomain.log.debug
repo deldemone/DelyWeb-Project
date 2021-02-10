@@ -1,0 +1,168 @@
+2021-02-10 12:42:42,456  ################################################################
+2021-02-10 12:42:42,456  ###############     DEBUT EXECUTION DU SCRIPT    ###############
+2021-02-10 12:42:42,456  ################################################################
+2021-02-10 12:42:42,456   ## STEP ## *** LOC  - Contrôle arborescence
+2021-02-10 12:42:42,456  ================================================================
+2021-02-10 12:42:42,456   ##  OK  ## *** LOC  - /root/Work existant
+2021-02-10 12:42:42,456   ##  OK  ## *** LOC  - /root/Work/UserSemaine06 existant
+2021-02-10 12:42:42,456   ##  OK  ## *** LOC  - /var/log existant
+2021-02-10 12:42:42,456   ##  OK  ## *** LOC  - /root/Work/QRcodePC existant
+2021-02-10 12:42:42,456   ##  OK  ## *** LOC  - /root/Work/Inventaire existant
+2021-02-10 12:42:42,456  ################################################################
+2021-02-10 12:42:42,456   ## STEP ## *** LOC  - Contrôle des fichiers requis
+2021-02-10 12:42:42,456  ================================================================
+2021-02-10 12:42:42,457   ##  OK  ## *** LOC  - /var/log/RenewDomain.log existant
+2021-02-10 12:42:42,457   ##  OK  ## *** LOC  - /root/Work/Inventaire/InventaireUtilisateurS06 existant
+2021-02-10 12:42:42,457   ##  OK  ## *** LOC  - /root/Work/Inventaire/InventaireDomaine existant
+2021-02-10 12:42:42,460   ##  OK  ## *** LOC  - Suppression anciennes fiches utilisateur
+2021-02-10 12:42:42,462  ################################################################
+2021-02-10 12:42:42,463   ## STEP ## *** LOC  - Démarrage du scanner IP
+2021-02-10 12:42:42,464   ## INFO ## *** LOC  - 192.168.122.3 est actif sur le réseau
+2021-02-10 12:42:42,464   ## INFO ## *** LOC  - 192.168.122.4 est actif sur le réseau
+2021-02-10 12:42:42,508  ################################################################
+2021-02-10 12:42:42,508  REQ87542 ## STEP ## *** LOC  - TRAITEMENT DE 192.168.122.3
+2021-02-10 12:42:42,508  ================================================================
+2021-02-10 12:42:42,508  REQ87542 ## STEP ## *** LOC  - Déclenchement génération paramètres distants
+2021-02-10 12:42:42,516  REQ87542 ##  OK  ## *** LOC  - Génération des paramétres
+2021-02-10 12:42:42,516  ================================================================
+2021-02-10 12:42:42,516  REQ87542 ## STEP ## *** LOC  - Verification prérequis sécurité SSH
+2021-02-10 12:42:42,516  REQ87542 ##  OK  ## *** LOC  - La clé du serveur déja présente sur client
+2021-02-10 12:42:42,517  REQ87542 ## STEP ## *** LOC  - Initialisation de la connexion ssh
+2021-02-10 12:42:42,519  starting thread (client mode): 0xbfd2e160
+2021-02-10 12:42:42,520  Local version/idstring: SSH-2.0-paramiko_2.7.2
+2021-02-10 12:42:42,529  Remote version/idstring: SSH-2.0-OpenSSH_7.9p1 Debian-10+deb10u2
+2021-02-10 12:42:42,529  Connected (version 2.0, client OpenSSH_7.9p1)
+2021-02-10 12:42:42,530  kex algos:['curve25519-sha256', 'curve25519-sha256@libssh.org', 'ecdh-sha2-nistp256', 'ecdh-sha2-nistp384', 'ecdh-sha2-nistp521', 'diffie-hellman-group-exchange-sha256', 'diffie-hellman-group16-sha512', 'diffie-hellman-group18-sha512', 'diffie-hellman-group14-sha256', 'diffie-hellman-group14-sha1'] server key:['rsa-sha2-512', 'rsa-sha2-256', 'ssh-rsa', 'ecdsa-sha2-nistp256', 'ssh-ed25519'] client encrypt:['chacha20-poly1305@openssh.com', 'aes128-ctr', 'aes192-ctr', 'aes256-ctr', 'aes128-gcm@openssh.com', 'aes256-gcm@openssh.com'] server encrypt:['chacha20-poly1305@openssh.com', 'aes128-ctr', 'aes192-ctr', 'aes256-ctr', 'aes128-gcm@openssh.com', 'aes256-gcm@openssh.com'] client mac:['umac-64-etm@openssh.com', 'umac-128-etm@openssh.com', 'hmac-sha2-256-etm@openssh.com', 'hmac-sha2-512-etm@openssh.com', 'hmac-sha1-etm@openssh.com', 'umac-64@openssh.com', 'umac-128@openssh.com', 'hmac-sha2-256', 'hmac-sha2-512', 'hmac-sha1'] server mac:['umac-64-etm@openssh.com', 'umac-128-etm@openssh.com', 'hmac-sha2-256-etm@openssh.com', 'hmac-sha2-512-etm@openssh.com', 'hmac-sha1-etm@openssh.com', 'umac-64@openssh.com', 'umac-128@openssh.com', 'hmac-sha2-256', 'hmac-sha2-512', 'hmac-sha1'] client compress:['none', 'zlib@openssh.com'] server compress:['none', 'zlib@openssh.com'] client lang:[''] server lang:[''] kex follows?False
+2021-02-10 12:42:42,530  Kex agreed: curve25519-sha256@libssh.org
+2021-02-10 12:42:42,531  HostKey agreed: ssh-ed25519
+2021-02-10 12:42:42,531  Cipher agreed: aes128-ctr
+2021-02-10 12:42:42,531  MAC agreed: hmac-sha2-256
+2021-02-10 12:42:42,531  Compression agreed: none
+2021-02-10 12:42:42,580  kex engine KexCurve25519 specified hash_algo <built-in function openssl_sha256>
+2021-02-10 12:42:42,580  Switch to new keys ...
+2021-02-10 12:42:42,583  Trying discovered key b'c5299c1eb461aaf2d58d00db983467ac' in /root/.ssh/id_rsa
+2021-02-10 12:42:42,625  userauth is OK
+2021-02-10 12:42:42,641  Authentication (publickey) successful!
+2021-02-10 12:42:42,642  REQ87542 ##  OK  ## *** LOC  - Connexion ssh vers 192.168.122.3
+2021-02-10 12:42:42,642  ================================================================
+2021-02-10 12:42:42,642  REQ87542 ## STEP ## *** LOC  - Dépôt du script via le SFTP
+2021-02-10 12:42:42,642  [chan 0] Max packet in: 32768 bytes
+2021-02-10 12:42:42,665  Received global request "hostkeys-00@openssh.com"
+2021-02-10 12:42:42,665  Rejecting "hostkeys-00@openssh.com" global request from server.
+2021-02-10 12:42:42,665  Debug msg: b'/root/.ssh/authorized_keys:1: key options: agent-forwarding port-forwarding pty user-rc x11-forwarding'
+2021-02-10 12:42:42,707  [chan 0] Max packet out: 32768 bytes
+2021-02-10 12:42:42,707  Secsh channel 0 opened.
+2021-02-10 12:42:42,709  [chan 0] Sesch channel 0 request ok
+2021-02-10 12:42:42,713  [chan 0] Opened sftp connection (server version 3)
+2021-02-10 12:42:42,714  [chan 0] open(b'/tmp/deploy.py', 'wb')
+2021-02-10 12:42:42,715  [chan 0] open(b'/tmp/deploy.py', 'wb') -> 00000000
+2021-02-10 12:42:42,716  [chan 0] close(00000000)
+2021-02-10 12:42:42,717  [chan 0] stat(b'/tmp/deploy.py')
+2021-02-10 12:42:42,719  REQ87542 ##  OK  ## *** LOC  - Dépôt du script python sur le client
+2021-02-10 12:42:42,719  [chan 0] sftp session closed.
+2021-02-10 12:42:42,719  [chan 0] EOF sent (0)
+2021-02-10 12:42:42,719  ================================================================
+2021-02-10 12:42:42,720  [chan 1] Max packet in: 32768 bytes
+2021-02-10 12:42:42,721  [chan 0] EOF received (0)
+2021-02-10 12:42:42,721  [chan 1] Max packet out: 32768 bytes
+2021-02-10 12:42:42,721  Secsh channel 1 opened.
+2021-02-10 12:42:42,722  [chan 1] Sesch channel 1 request ok
+2021-02-10 12:42:42,853  [chan 1] EOF received (1)
+2021-02-10 12:42:42,853  REQ87542 ## STEP ## *** DIST - Exécution du script de déploiement
+2021-02-10 12:42:42,854  REQ87542 ##  OK  ## *** DIST - Un user à supprimer : USERS006-5665
+2021-02-10 12:42:42,854  REQ87542 ##  OK  ## *** DIST - Fermeture session USERS006-5665.
+2021-02-10 12:42:42,855  REQ87542 ##  OK  ## *** DIST - Ancien utilisateur USERS006-5665 a été supprimé.
+2021-02-10 12:42:42,855  REQ87542 ##  OK  ## *** DIST - /home de l'ancien utilisateur USERS006-5665 a été supprimé.
+2021-02-10 12:42:42,856  REQ87542 ##  OK  ## *** DIST - Nouvel utilisateur USERS006-0382 a été créé.
+2021-02-10 12:42:42,857  [chan 1] EOF sent (1)
+2021-02-10 12:42:42,857  REQ87542 ##  OK  ## *** DIST - /Home USERS006-0382 a été créé.
+2021-02-10 12:42:42,858  REQ87542 ##  OK  ## *** DIST - PWD sécurisé déployé pour USERS006-0382.
+2021-02-10 12:42:42,858  REQ87542 ##  OK  ## *** DIST - Changement du shell par défaut en bash
+2021-02-10 12:42:42,858  REQ87542 ##  OK  ## *** LOC  - Exécution du script de déploiement terminée
+2021-02-10 12:42:42,859  REQ87542 ##  OK  ## *** LOC  - Fermeture de la session ssh
+2021-02-10 12:42:42,859  ================================================================
+2021-02-10 12:42:42,859  REQ87542 ## STEP ## *** LOC  - Inscription dans /root/Work/Inventaire/InventaireUtilisateurS06
+2021-02-10 12:42:42,859  REQ87542 ##  OK  ## *** LOC  - Nouvelle entrée dans l'inventaire :
+2021-02-10 12:42:42,859  REQ87542 ##  OK  ## *** LOC  - /root/Work/Inventaire/InventaireUtilisateurS06
+2021-02-10 12:42:42,859  REQ87542 ##  OK  ## *** LOC  - Entrée déjà présente dans inventaire :
+2021-02-10 12:42:42,859  REQ87542 ##  OK  ## *** LOC  - /root/Work/Inventaire/InventaireDomaine
+2021-02-10 12:42:42,860  REQ87542 ##  OK  ## *** LOC  - Création de la fiche USERS006-0382
+2021-02-10 12:42:42,860  REQ87542 ##  OK  ## *** LOC  - 080027f4e5b2.jpg existant sous : 
+2021-02-10 12:42:42,860  REQ87542 ##  OK  ## *** LOC  - /root/Work/QRcodePC
+2021-02-10 12:42:42,861  REQ87542 ##  OK  ## *** LOC  - Les fichiers temporaires *.tmp ont été supprimés
+2021-02-10 12:42:42,862  ################################################################
+2021-02-10 12:42:42,863  REQ64111 ## STEP ## *** LOC  - TRAITEMENT DE 192.168.122.4
+2021-02-10 12:42:42,863  ================================================================
+2021-02-10 12:42:42,863  REQ64111 ## STEP ## *** LOC  - Déclenchement génération paramètres distants
+2021-02-10 12:42:42,867  EOF in transport thread
+2021-02-10 12:42:42,872  REQ64111 ##  OK  ## *** LOC  - Génération des paramétres
+2021-02-10 12:42:42,872  ================================================================
+2021-02-10 12:42:42,872  REQ64111 ## STEP ## *** LOC  - Verification prérequis sécurité SSH
+2021-02-10 12:42:42,872  REQ64111 ##  OK  ## *** LOC  - La clé du serveur déja présente sur client
+2021-02-10 12:42:42,872  REQ64111 ## STEP ## *** LOC  - Initialisation de la connexion ssh
+2021-02-10 12:42:42,874  starting thread (client mode): 0xbfd2e278
+2021-02-10 12:42:42,875  Local version/idstring: SSH-2.0-paramiko_2.7.2
+2021-02-10 12:42:42,884  Remote version/idstring: SSH-2.0-OpenSSH_7.9p1 Debian-10+deb10u2
+2021-02-10 12:42:42,884  Connected (version 2.0, client OpenSSH_7.9p1)
+2021-02-10 12:42:42,885  kex algos:['curve25519-sha256', 'curve25519-sha256@libssh.org', 'ecdh-sha2-nistp256', 'ecdh-sha2-nistp384', 'ecdh-sha2-nistp521', 'diffie-hellman-group-exchange-sha256', 'diffie-hellman-group16-sha512', 'diffie-hellman-group18-sha512', 'diffie-hellman-group14-sha256', 'diffie-hellman-group14-sha1'] server key:['rsa-sha2-512', 'rsa-sha2-256', 'ssh-rsa', 'ecdsa-sha2-nistp256', 'ssh-ed25519'] client encrypt:['chacha20-poly1305@openssh.com', 'aes128-ctr', 'aes192-ctr', 'aes256-ctr', 'aes128-gcm@openssh.com', 'aes256-gcm@openssh.com'] server encrypt:['chacha20-poly1305@openssh.com', 'aes128-ctr', 'aes192-ctr', 'aes256-ctr', 'aes128-gcm@openssh.com', 'aes256-gcm@openssh.com'] client mac:['umac-64-etm@openssh.com', 'umac-128-etm@openssh.com', 'hmac-sha2-256-etm@openssh.com', 'hmac-sha2-512-etm@openssh.com', 'hmac-sha1-etm@openssh.com', 'umac-64@openssh.com', 'umac-128@openssh.com', 'hmac-sha2-256', 'hmac-sha2-512', 'hmac-sha1'] server mac:['umac-64-etm@openssh.com', 'umac-128-etm@openssh.com', 'hmac-sha2-256-etm@openssh.com', 'hmac-sha2-512-etm@openssh.com', 'hmac-sha1-etm@openssh.com', 'umac-64@openssh.com', 'umac-128@openssh.com', 'hmac-sha2-256', 'hmac-sha2-512', 'hmac-sha1'] client compress:['none', 'zlib@openssh.com'] server compress:['none', 'zlib@openssh.com'] client lang:[''] server lang:[''] kex follows?False
+2021-02-10 12:42:42,885  Kex agreed: curve25519-sha256@libssh.org
+2021-02-10 12:42:42,885  HostKey agreed: ssh-ed25519
+2021-02-10 12:42:42,886  Cipher agreed: aes128-ctr
+2021-02-10 12:42:42,886  MAC agreed: hmac-sha2-256
+2021-02-10 12:42:42,886  Compression agreed: none
+2021-02-10 12:42:42,893  kex engine KexCurve25519 specified hash_algo <built-in function openssl_sha256>
+2021-02-10 12:42:42,893  Switch to new keys ...
+2021-02-10 12:42:42,896  Trying discovered key b'c5299c1eb461aaf2d58d00db983467ac' in /root/.ssh/id_rsa
+2021-02-10 12:42:42,936  userauth is OK
+2021-02-10 12:42:42,947  Authentication (publickey) successful!
+2021-02-10 12:42:42,947  REQ64111 ##  OK  ## *** LOC  - Connexion ssh vers 192.168.122.4
+2021-02-10 12:42:42,948  ================================================================
+2021-02-10 12:42:42,948  REQ64111 ## STEP ## *** LOC  - Dépôt du script via le SFTP
+2021-02-10 12:42:42,948  [chan 0] Max packet in: 32768 bytes
+2021-02-10 12:42:42,966  Received global request "hostkeys-00@openssh.com"
+2021-02-10 12:42:42,966  Rejecting "hostkeys-00@openssh.com" global request from server.
+2021-02-10 12:42:42,967  Debug msg: b'/root/.ssh/authorized_keys:1: key options: agent-forwarding port-forwarding pty user-rc x11-forwarding'
+2021-02-10 12:42:43,007  [chan 0] Max packet out: 32768 bytes
+2021-02-10 12:42:43,007  Secsh channel 0 opened.
+2021-02-10 12:42:43,009  [chan 0] Sesch channel 0 request ok
+2021-02-10 12:42:43,013  [chan 0] Opened sftp connection (server version 3)
+2021-02-10 12:42:43,014  [chan 0] open(b'/tmp/deploy.py', 'wb')
+2021-02-10 12:42:43,015  [chan 0] open(b'/tmp/deploy.py', 'wb') -> 00000000
+2021-02-10 12:42:43,017  [chan 0] close(00000000)
+2021-02-10 12:42:43,018  [chan 0] stat(b'/tmp/deploy.py')
+2021-02-10 12:42:43,019  REQ64111 ##  OK  ## *** LOC  - Dépôt du script python sur le client
+2021-02-10 12:42:43,019  [chan 0] sftp session closed.
+2021-02-10 12:42:43,019  [chan 0] EOF sent (0)
+2021-02-10 12:42:43,020  ================================================================
+2021-02-10 12:42:43,020  [chan 1] Max packet in: 32768 bytes
+2021-02-10 12:42:43,021  [chan 0] EOF received (0)
+2021-02-10 12:42:43,065  [chan 1] Max packet out: 32768 bytes
+2021-02-10 12:42:43,065  Secsh channel 1 opened.
+2021-02-10 12:42:43,067  [chan 1] Sesch channel 1 request ok
+2021-02-10 12:42:43,205  [chan 1] EOF received (1)
+2021-02-10 12:42:43,205  REQ64111 ## STEP ## *** DIST - Exécution du script de déploiement
+2021-02-10 12:42:43,205  REQ64111 ##  OK  ## *** DIST - Un user à supprimer : USERS006-4470
+2021-02-10 12:42:43,206  REQ64111 ##  OK  ## *** DIST - Fermeture session USERS006-4470.
+2021-02-10 12:42:43,207  REQ64111 ##  OK  ## *** DIST - Ancien utilisateur USERS006-4470 a été supprimé.
+2021-02-10 12:42:43,213  REQ64111 ##  OK  ## *** DIST - /home de l'ancien utilisateur USERS006-4470 a été supprimé.
+2021-02-10 12:42:43,213  REQ64111 ##  OK  ## *** DIST - Nouvel utilisateur USERS006-2543 a été créé.
+2021-02-10 12:42:43,213  REQ64111 ##  OK  ## *** DIST - /Home USERS006-2543 a été créé.
+2021-02-10 12:42:43,214  REQ64111 ##  OK  ## *** DIST - PWD sécurisé déployé pour USERS006-2543.
+2021-02-10 12:42:43,214  REQ64111 ##  OK  ## *** DIST - Changement du shell par défaut en bash
+2021-02-10 12:42:43,218  [chan 1] EOF sent (1)
+2021-02-10 12:42:43,218  REQ64111 ##  OK  ## *** LOC  - Exécution du script de déploiement terminée
+2021-02-10 12:42:43,227  REQ64111 ##  OK  ## *** LOC  - Fermeture de la session ssh
+2021-02-10 12:42:43,227  ================================================================
+2021-02-10 12:42:43,227  REQ64111 ## STEP ## *** LOC  - Inscription dans /root/Work/Inventaire/InventaireUtilisateurS06
+2021-02-10 12:42:43,228  REQ64111 ##  OK  ## *** LOC  - Nouvelle entrée dans l'inventaire :
+2021-02-10 12:42:43,228  REQ64111 ##  OK  ## *** LOC  - /root/Work/Inventaire/InventaireUtilisateurS06
+2021-02-10 12:42:43,228  REQ64111 ##  OK  ## *** LOC  - Entrée déjà présente dans inventaire :
+2021-02-10 12:42:43,228  REQ64111 ##  OK  ## *** LOC  - /root/Work/Inventaire/InventaireDomaine
+2021-02-10 12:42:43,228  REQ64111 ##  OK  ## *** LOC  - Création de la fiche USERS006-2543
+2021-02-10 12:42:43,229  REQ64111 ##  OK  ## *** LOC  - 080027eafa15.jpg existant sous : 
+2021-02-10 12:42:43,229  REQ64111 ##  OK  ## *** LOC  - /root/Work/QRcodePC
+2021-02-10 12:42:43,229  REQ64111 ##  OK  ## *** LOC  - Les fichiers temporaires *.tmp ont été supprimés
+2021-02-10 12:42:43,232  EOF in transport thread
+2021-02-10 12:42:43,239  ################################################################
+2021-02-10 12:42:43,239   ## STEP ## *** LOC  - TRAITEMENT TERMINE
+2021-02-10 12:42:43,240  ################################################################
