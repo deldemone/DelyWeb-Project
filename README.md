@@ -1,5 +1,5 @@
 -------------  -------------
-### Script python d'automatisation de configuration de poste client & de Gestion de Parc informatique
+### Script python d'automatisation de Configuration de poste client & de Gestion de Parc informatique
 -------------  -------------
 
 | Auteur | Delphine Durand |
