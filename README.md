@@ -17,8 +17,9 @@ Il a été codé dans le cadre du projet 6 : Participez à la vie de la communau
 
 ### Description
 > Dans le cadre de l'association "A fond Linux", nous sommes amenés chaque fin de semaine à reinitialiser tous les postes du parc informatique et de les préparer pour l'arrivée de nouveaux apprenants.
-Ce script permet d'automatiser la configuration de ces postes et la création des comptes utilisateurs à distance
-Ce script peut être appelé manuellement ou via un cron defini dans le crontab
+Ce script permet d'automatiser la configuration de ces postes à distance via le SSH (création nouveau user, mdp complexe, suppression ancien user, repertoire, changement de bash en shell).
+Il permet également de maintenir un inventaire du parc informatique ainsi que de créer des QRcode destinés à être apposé sur chaque poste.
+Ce script peut être appelé manuellement ou via un cron defini dans le crontab.
 
 
 ### Le crontab
@@ -31,6 +32,8 @@ Ce script peut être appelé manuellement ou via un cron defini dans le crontab
 
 ### Les prérequis
 -------------  -------------
+> Dans un premier temps il vous faudra renseingner le mot de passe administrateur de vos postes clients dans le fichier .pwd à la racine du dépôt.
+
 ### Configuration du serveur  
 #### Les packets 
 > ###### Git **`sudo apt install git -y`**
@@ -86,8 +89,8 @@ Description : Référencement de toutes les fonctions appelées par le script Re
 Description : Référencement de tous les modules appelées par les scripts RenewDomain.py, Variables.py et Fonctions.py
 - Variables.py
 Description : Référencement de toutes les variables et dictionnaires appelés par les scripts RenewDomain.py et Fonctions.py
-Nom :	.pwd 
-- Description : Fichier securité mot de passe root
+- Nom :	.pwd 
+Description : Fichier securité mot de passe root
 -------------  -------------
 ### Les fichiers OUTPUT
 - Le LOG :/root/Work/RenewDomain.log -> /var/log/RenewDomain.log (lien symbolique)
