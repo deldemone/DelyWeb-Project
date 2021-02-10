@@ -36,24 +36,35 @@ Ce script peut être appelé manuellement ou via un cron defini dans le crontab.
 
 ### Configuration du serveur  
 #### Les packets 
-> ###### Git **`sudo apt install git -y`**
-> ###### Tree **`sudo apt install tree -y`**
-> ###### Le Serveur SSH   **`sudo apt-get install openssh-server -y`**
 
-#### Importation du projet
-> ##### Initialisation du répertoire local du serveur : **`git init`**
-> ##### Faire pointer le dépôt local pointe sur le dépôt distant  :**`git remote add US https://github.com/deldemone/DelyWeb-Project.git`**
-> ##### Clonez le dépôt et le dupliquer en local : **`git clone https://github.com/deldemone/DelyWeb-Project.git`**
+| Packets| Commande                    |
+| ------------- | ------------------------------ |
+|**`Git`** | `sudo apt install git -y`**     |
+|**`Tree`** |  `sudo apt install tree -y`**      |
+|**`Serveur SSH `** |  `sudo apt-get install openssh-server -y` |
+ 
+
+#### Importation du projet depuis Github
+
+| Etape| Commande                    |
+| ------------- | ------------------------------ |
+|**`Initialisation du répertoire local du serveur`** | `sudo git init`     |
+|**`Faire pointer le dépôt local pointe sur le dépôt distant`** |  `git remote add US https://github.com/deldemone/DelyWeb-Project.git`    |
+|**`Clonez le dépôt et le dupliquer en local `** |  `sudo git clone https://github.com/deldemone/DelyWeb-Project.git` |
+
 
 #### Le SSH
 > A noter : L'authentification se fera par échanges de clés publique/privée
 
 ##### Génération des clés SSH  **`ssh-keygen`**
 
-#### Les modules
-> ###### - Installation de module Python : `$  sudo apt install python3-pip`
-> ###### - Installation de Paramiko : `$  sudo pip3 install paramiko`
-> ###### - Installation de qrcode et de pillow : `$  sudo pip3 install qrcode[pil]`
+#### Installation des modules
+| Module| Commande                    |
+| ------------- | ------------------------------ |
+|**`pip Python`** | `$  sudo apt install python3-pip`      |
+|**`Paramiko`** |  `$  sudo pip3 install paramiko`       |
+|**`qrcode et de pillow `** |  `$  sudo pip3 install qrcode[pil]` |
+
 
 #### Configuration des postes cibles
 > Chaque poste de travail devra porter un nom hostname unique, et disposer d'un compte administrateur accessible par SSH
@@ -83,27 +94,30 @@ Décommenter la ligne du fichier */etc/ssh/sshd.config *et mettre «yes»
 
 -------------  -------------
 ### Les fichiers INPUT
-- Nom : Fonctions.py
-Description : Référencement de toutes les fonctions appelées par le script RenewDomain.py
-- Nom :	Modules.py
-Description : Référencement de tous les modules appelées par les scripts RenewDomain.py, Variables.py et Fonctions.py
-- Variables.py
-Description : Référencement de toutes les variables et dictionnaires appelés par les scripts RenewDomain.py et Fonctions.py
-- Nom :	.pwd 
-Description : Fichier securité mot de passe root
+| Nom | Description                    |
+| ------------- | ------------------------------ |
+|**`Fonctions.py`** |  Référencement de toutes les fonctions appelées par le script RenewDomain.py.       |
+|**`Modules.py`** |  Référencement de tous les modules appelées par les scripts RenewDomain.py, Variables.py et Fonctions.py.       |
+|**`Variables.py`** |  Référencement de toutes les variables et dictionnaires appelés par les scripts RenewDomain.py et Fonctions.py.       |
+|**`.pwd `** |  Fichier securité mot de passe root.       |
+
 -------------  -------------
 ### Les fichiers OUTPUT
-- Le LOG :/root/Work/RenewDomain.log -> /var/log/RenewDomain.log (lien symbolique)
-- L'inventaire utilisateur : /root/Work/Inventaire/InventaireUtilisateurS0X
-- L'inventaire du parc : /root/Work/Inventaire/InventaireDomaine
-- Les fiches utilisateurs : /root/Work/UserSemaine0X/USERS00X-XXXX
-- Les QRcode des PCs : /root/Work/QRcodePC/mac.jpg
+Des exemples de chaque type se trouve dans [Lien documents](https://github.com/deldemone/DelyWeb-Project/tree/main/Documents)
+| Nom | Path                    |
+| ------------- | ------------------------------ |
+|**`Le LOG`** |  /root/Work/RenewDomain.log -> /var/log/RenewDomain.log (lien symbolique).       |
+|**`L'inventaire utilisateur`** |  /root/Work/Inventaire/InventaireUtilisateurS0X.       |
+|**`L'inventaire du parc`** |  /root/Work/Inventaire/InventaireDomaine.       |
+|**`Les fiches utilisateurs `** |  /root/Work/UserSemaine0X/USERS00X-XXXX.    
+|**`Les QRcode`** |  /root/Work/QRcodePC/mac.jpg.  
+
 -------------  -------------
 ### Execution du script et  arguments
 Exemple :
 **`RenewDomain.py --log info|warn|debug --reseau 192.168.122 --range 2,10`**
 
-L'execution du script néccessite deux paramètres **obligatoires**
+> L'execution du script néccessite deux paramètres **obligatoires**
 \-\-log debug|info
 \-\-reseau les 3 premiers octets du réseau cible 
 et un paramètre **facultatif** \-\-range ipdebut,ipfin <= derniers octets
@@ -114,12 +128,14 @@ et un paramètre **facultatif** \-\-range ipdebut,ipfin <= derniers octets
 #### Step 2 :	Execution Du Script	
 
      """On récupère le niveau de log
-    DEBUG: Information détaillée, intéressante seulement lorsqu'on diagnostique un problème
-    INFO: Confirmation que tout fonctionne comme prévu.
-    WARNING: L'indication que quelque chose d'inattendu a eu lieu, ou de la possibilité d'un problème dans un futur proche 
-    (par exemple « espace disque faible »). Le script fonctionne encore normalement.
-    ERROR:Du fait d'un problème plus sérieux, le logiciel n'a pas été capable de réaliser une tâche.
-    CRITICAL: Une erreur sérieuse, indiquant que le programme lui-même pourrait être incapable de continuer à fonctionner. """
+| Niveau log | Description                    |
+| ------------- | ------------------------------ |
+|**`DEBUG`** |  Information détaillée, intéressante seulement lorsqu'on diagnostique un problème.       |
+|**`INFO`** |  Confirmation que tout fonctionne comme prévu.      |
+|**`WARNING`** |  L'indication que quelque chose d'inattendu a eu lieu, ou de la possibilité d'un problème dans un futur proche (par exemple « espace disque faible »). Le script fonctionne encore normalement.      |
+|**`ERROR `** |  Du fait d'un problème plus sérieux, le logiciel n'a pas été capable de réaliser une tâche.    
+|**`CRITICAL`** |  Une erreur sérieuse, indiquant que le programme lui-même pourrait être incapable de continuer à fonctionner. |
+
 
 #### Step 3 :	Initialisation Du Log
 #### Step 4 :	Preparation de l'environnement de travail
@@ -177,8 +193,16 @@ et un paramètre **facultatif** \-\-range ipdebut,ipfin <= derniers octets
 #### Step 7.a : Valorisation De L'Inventaire Utilisateur
 #### Step 7.b : Valorisation De L'Inventaire Du Parc
 #### Step 8 : CréAtion De La Fiche Utilisateur
+> User : USERSS006-1291
+
+![](https://github.com/deldemone/DelyWeb-Project/blob/main/Documents/USERSS006-1291.PNG)
 #### Step 9 : CréAtion De La Fiche Pc / Qrcode
+> QRCode du PC mac : 08:00:27:ea:fa:15
+
+![](https://github.com/deldemone/DelyWeb-Project/blob/main/Documents/080027eafa15.jpg)
 #### Step 10 : Suppression Des Fichiers Temporaires
 #### Step 11 : Affichage De La Nouvelle Arborescence
 
+### Sortie Console
+![](https://github.com/deldemone/DelyWeb-Project/blob/main/Documents/SortieConsole.PNG)
 
