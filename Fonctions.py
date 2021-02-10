@@ -325,7 +325,7 @@ def CreationFicheUtilisateur(userID, password, host, REQ):
             fichier.write("		Formation Linux Semaine " + NumSemaine + "\n \n")
             fichier.write(LIGHT + "\n \n")
             fichier.write("	Hostname	=	" + host + "\n")
-            fichier.write("	Login utilisateur	=	" + userID + "\n")
+            fichier.write("	Login User	=	" + userID + "\n")
             fichier.write("	Mot de passe	=	" + password + "\n \n")
             fichier.write("\n" + PLEIN + "\n \n")
             fichier.close()
