@@ -32,7 +32,7 @@ Ce script peut être appelé manuellement ou via un cron defini dans le crontab.
 
 ### Les prérequis
 -------------  -------------
-> Dans un premier temps il vous faudra renseingner le mot de passe administrateur de vos postes clients dans le fichier .pwd à la racine du dépôt.
+> Dans un premier temps il vous faudra renseigner le mot de passe administrateur de vos postes clients dans le fichier .pwd à la racine du dépôt.
 
 ### Configuration du serveur  
 #### Les packets 
