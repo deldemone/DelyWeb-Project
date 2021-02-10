@@ -203,6 +203,22 @@ et un paramètre **facultatif** \-\-range ipdebut,ipfin <= derniers octets
 #### Step 10 : Suppression Des Fichiers Temporaires
 #### Step 11 : Affichage De La Nouvelle Arborescence
 
+-------------  -------------
 ### Sortie Console
 ![](https://github.com/deldemone/DelyWeb-Project/blob/main/Documents/SortieConsole.PNG)
+
+-------------  -------------
+### Conclusion  et Contribution
+> Ce script est un cas d'étude.
+Néanmoins il y a quelques fonctions interressantes qui pourraient aider la communauté apprenantes. 
+
+> Ces fonctions sont contenues dans le fichier Fonctions.py :
+
+>- Fonctions intervenants sur les répertoires et les fichiers dans la partie "Environnement de travail"
+- Quelques fonctions outils (génération de chaines aléatoires, nettoyage de repertoire suivant les extensions de fichiers, etc)
+- Fonctions relatives aux connexions distantes via le SSH
+- Fonctions de création de QRCode
+
+>N'hésitez pas à me soumettre vos contributions, je suis très réactive.
+> https://docs.microsoft.com/fr-fr/learn/modules/contribute-open-source/3-contribute
 
