@@ -93,9 +93,13 @@ Description : Référencement de toutes les variables et dictionnaires appelés 
 Description : Fichier securité mot de passe root
 -------------  -------------
 ### Les fichiers OUTPUT
+Des exemples de chaque type se trouve dans [Lien documents](https://github.com/deldemone/DelyWeb-Project/tree/main/Documents)
 - Le LOG :/root/Work/RenewDomain.log -> /var/log/RenewDomain.log (lien symbolique)
+Deux exemples présents dans le répertoire de dépôt Documents : RenewDomain.log.debug et RenewDomain.log.info
 - L'inventaire utilisateur : /root/Work/Inventaire/InventaireUtilisateurS0X
+Un exemple présent dans le répertoire de dépôt Documents : InventaireUtilisateurS06
 - L'inventaire du parc : /root/Work/Inventaire/InventaireDomaine
+Un exemple présent dans le répertoire de dépôt Documents : InventaireUtilisateurS06
 - Les fiches utilisateurs : /root/Work/UserSemaine0X/USERS00X-XXXX
 - Les QRcode des PCs : /root/Work/QRcodePC/mac.jpg
 -------------  -------------
