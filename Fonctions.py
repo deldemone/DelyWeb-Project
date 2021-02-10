@@ -258,7 +258,7 @@ def sessionssh(ip, userID, password, REQ):
                 for line in stdout.read().splitlines():
                     sortieDist = (line.decode("utf-8", "ignore"))
                     #print("sortiedist = " + sortieDist)
-                    if sortieDist != "" and "System" not in sortieDist:
+                    if sortieDist != "" and "System" and "interpréteur" not in sortieDist:
 						# Sortie console
                         print(sortieDist)
 						# Sortie log
