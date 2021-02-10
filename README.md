@@ -194,6 +194,9 @@ et un paramètre **facultatif** \-\-range ipdebut,ipfin <= derniers octets
 #### Step 7.b : Valorisation De L'Inventaire Du Parc
 #### Step 8 : CréAtion De La Fiche Utilisateur
 #### Step 9 : CréAtion De La Fiche Pc / Qrcode
+![](https://github.com/deldemone/DelyWeb-Project/tree/main/Documents/080027eafa15.jpg)
+
+> QRCode du PC mac : 08:00:27:ea:fa:15
 #### Step 10 : Suppression Des Fichiers Temporaires
 #### Step 11 : Affichage De La Nouvelle Arborescence
 
