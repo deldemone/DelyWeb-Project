@@ -227,7 +227,6 @@ for ip in ipmachines:
         logging.info(REQ + STEP + "Initialisation de la connexion ssh")
         #=== Ouverture de la session ssh sur le PC Distant + depot du script distant + ececution du script
         infoSystemDistant = sessionssh(ip, userID, password, REQ)
-        print("infoSystemDistant = " + infoSystemDistant)
         separateur = " "
         system = ""
         system = separateur.join(infoSystemDistant.split(separateur)[-1:])
