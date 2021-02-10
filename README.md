@@ -29,38 +29,26 @@ Ce script peut être appelé manuellement ou via un cron defini dans le crontab
 
 ### Les prérequis
 -------------  -------------
-#### Configuration du serveur  
-##### Les packets 
-###### Git	 
-**`sudo apt install git -y`**
-###### Tree 
-**`sudo apt install tree -y`**
-###### Le Serveur SSH
-**`sudo apt-get install openssh-server -y`**
+### Configuration du serveur  
+#### Les packets 
+###### Git **`sudo apt install git -y`**
+###### Tree **`sudo apt install tree -y`**
+###### Le Serveur SSH   **`sudo apt-get install openssh-server -y`**
 
-#### Importation du projet
-##### Initialisation du répertoire local du serveur
-**`git init`**
-##### Faire pointer le dépôt local pointe sur le dépôt distant
-**`git remote add US https://github.com/deldemone/DelyWeb-Project.git`**
-##### Clonez le dépôt en local : cloner son contenu et le dupliquer en local.
-**`git clone https://github.com/deldemone/DelyWeb-Project.git`**
+##### Importation du projet
+##### Initialisation du répertoire local du serveur **`git init`**
+##### Faire pointer le dépôt local pointe sur le dépôt distant **`git remote add US https://github.com/deldemone/DelyWeb-Project.git`**
+##### Clonez le dépôt en local : cloner son contenu et le dupliquer en local. **`git clone https://github.com/deldemone/DelyWeb-Project.git`**
 
-#### Le SSH
+##### Le SSH
 > A noter : L'authentification se fera par échanges de clés publique/privée
 
-##### Génération des clés SSH 
-**`ssh-keygen`**
+##### Génération des clés SSH  **`ssh-keygen`**
 
-##### Les modules
-###### - Installation de module Python :
-`$  sudo apt install python3-pip`
-
-###### - Installation de Paramiko : 
-`$  sudo pip3 install paramiko`
-
-###### - Installation de qrcode et de pillow : 
-`$  sudo pip3 install qrcode[pil]`
+#### Les modules
+###### - Installation de module Python : `$  sudo apt install python3-pip`
+###### - Installation de Paramiko : `$  sudo pip3 install paramiko`
+###### - Installation de qrcode et de pillow : `$  sudo pip3 install qrcode[pil]`
 
 #### Configuration des postes cibles
 > Chaque poste de travail devra porter un nom hostname unique, et disposer d'un compte administrateur accessible par SSH
