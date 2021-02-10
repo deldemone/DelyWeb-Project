@@ -3,15 +3,15 @@
 
 """
 =============================
-		LES FONCTIONS
+		LES MODULES
 =============================
 Nom :	Modules.py
 Description : Ici sont référencées tous les modules appelées par les scripts RenewDomain.py, Variables.py et Fonctions.py
 """
-__author__ = "Delphine Durand Demongeot"
+__author__ = "Delphine Durand"
 __version__ = "1.0.0"
-__email__ = "dd0275416@gmail.com"
-__status__ = "Finalisée"
+__email__ = "contact@DelyWeb.fr"
+__status__ = "Production"
 
 
 import sys			# module accès aux paramètres et fonctions propres aux systèmes

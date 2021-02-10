@@ -10,10 +10,10 @@ Description : Ici sont référencées toutes les variables et dictionnaires appe
 
 """
 
-__author__ = "Delphine Durand Demongeot"
+__author__ = "Delphine Durand"
 __version__ = "1.0.0"
-__email__ = "dd0275416@gmail.com"
-__status__ = "Finalisé"
+__email__ = "contact@DelyWeb.fr"
+__status__ = "Production"
 
 ### Chargement des modules
 from Modules import *

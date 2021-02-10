@@ -3,10 +3,10 @@
 
 ###Description: Script de déploiement"""
 ##################################################################################################################
-__author__ = "Delphine Durand Demongeot"
+__author__ = "Delphine Durand"
 __version__ = "1.0.0"
-__email__ = "dd0275416@gmail.com"
-__status__ = "En cours de rédaction"
+__email__ = "contact@DelyWeb.fr"
+__status__ = "Production"
 
 
 ########################################################################

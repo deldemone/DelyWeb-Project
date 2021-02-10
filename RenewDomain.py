@@ -13,10 +13,10 @@ Action :		Permet de scanner le reseau d'un domaine
 				De créer des QRcode à partir de l'adresse mac à apposer sur les postes de travail
 """
 ##################################################################################################################
-__author__ = "Delphine Durand Demongeot"
+__author__ = "Delphine Durand"
 __version__ = "1.0.0"
-__email__ = "dd0275416@gmail.com"
-__status__ = "En cours de rédaction"
+__email__ = "contact@DelyWeb.fr"
+__status__ = "Production"
 
 ### STEP 1 : Chargement des fonctions et des modules
 from Fonctions import *

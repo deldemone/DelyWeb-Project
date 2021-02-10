@@ -10,10 +10,11 @@ Description : Ici sont référencées toutes les fonctions appelées par le scri
 """
 
 ##################################################################################################################
-__author__ = "Delphine Durand Demongeot"
+__author__ = "Delphine Durand"
 __version__ = "1.0.0"
-__email__ = "dd0275416@gmail.com"
-__status__ = "Finalisée"
+__email__ = "contact@DelyWeb.fr"
+__status__ = "Production"
+
 
 ### Chargement des fonctions et des modules
 from Modules import *
@@ -300,14 +301,16 @@ def Inventaire(LigneInvent, typeInvent, mac, REQ):
             writeInvent = open(typeInvent,"a")	# ouverture de l'inventaire en écriture
             writeInvent.write(LigneInvent + "\n")	# édition de l'inventaire
             writeInvent.close()		# fermeture du fichier inventaire
-            logging.info(REQ + OK + "Nouvelle entrée dans l'inventaire")
+            logging.info(REQ + OK + "Nouvelle entrée dans l'inventaire :")
+            logging.info(REQ + OK + typeInvent)
         else:
 			# Sortie log
-            logging.info(REQ + OK + "Entrée déjà présente dans inventaire")
+            logging.info(REQ + OK + "Entrée déjà présente dans inventaire :")
+            logging.info(REQ + OK + typeInvent)
     except:
 		# Sortie log
-        logging.info(REQ + KO + "Aucune inscription dans l'inventaire ")
-
+        logging.info(REQ + KO + "Aucune inscription possible dans l'inventaire :")
+        logging.info(REQ + OK + typeInvent)
 #	CREATION FICHE UTILISATEUR			
 def CreationFicheUtilisateur(userID, password, host, REQ):
     """ Création de la fiche à communiquer à l'utilisateur 
