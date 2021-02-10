@@ -38,9 +38,9 @@ Ce script peut être appelé manuellement ou via un cron defini dans le crontab
 ###### Le Serveur SSH   **`sudo apt-get install openssh-server -y`**
 
 #### Importation du projet
-##### Initialisation du répertoire local du serveur **`git init`**
-##### Faire pointer le dépôt local pointe sur le dépôt distant **`git remote add US https://github.com/deldemone/DelyWeb-Project.git`**
-##### Clonez le dépôt en local : cloner son contenu et le dupliquer en local. **`git clone https://github.com/deldemone/DelyWeb-Project.git`**
+##### Initialisation du répertoire local du serveur : **`git init`**
+##### Faire pointer le dépôt local pointe sur le dépôt distant  :**`git remote add US https://github.com/deldemone/DelyWeb-Project.git`**
+##### Clonez le dépôt et le dupliquer en local : **`git clone https://github.com/deldemone/DelyWeb-Project.git`**
 
 #### Le SSH
 > A noter : L'authentification se fera par échanges de clés publique/privée
