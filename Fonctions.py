@@ -254,9 +254,10 @@ def sessionssh(ip, userID, password, REQ):
             try:
 				# Sortie log
                 logging.info(LIGHT)
-                stdin, stdout, stderr = ssh.exec_command('python /tmp/deploy.py --userID ' + userID + ' --pwd ' + password)
+                stdin, stdout, stderr = ssh.exec_command('python3 /tmp/deploy.py --userID ' + userID + ' --pwd ' + password)
                 for line in stdout.read().splitlines():
                     sortieDist = (line.decode("utf-8", "ignore"))
+                    print("sortiedist = " + sortieDist)
                     if sortieDist != "" and "System" not in sortieDist:
 						# Sortie console
                         print(sortieDist)
