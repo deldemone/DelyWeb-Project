@@ -8,7 +8,7 @@
 | Dernière modification      | 06/02/2021       | 
 | Version de Python | 3.7.3        |  
 
-Créé sur Linux pour environnement Linux Debian       
+Créé sur Linux pour environnement Linux      
 
 
 ### Contexte
@@ -42,7 +42,7 @@ Ce script peut être appelé manuellement ou via un cron defini dans le crontab.
 |**`Git`** | `sudo apt install git -y`**     |
 |**`Tree`** |  `sudo apt install tree -y`**      |
 |**`Serveur SSH `** |  `sudo apt-get install openssh-server -y` |
- 
+> A noter : Pour les versions RedHat utiliser yum au lieu de apt 
 
 #### Importation du projet depuis Github
 
@@ -64,15 +64,16 @@ Ce script peut être appelé manuellement ou via un cron defini dans le crontab.
 |**`pip Python`** | `$  sudo apt install python3-pip`      |
 |**`Paramiko`** |  `$  sudo pip3 install paramiko`       |
 |**`qrcode et de pillow `** |  `$  sudo pip3 install qrcode[pil]` |
-
+> A noter : Pour les versions RedHat utiliser yum au lieu de apt
 
 #### Configuration des postes cibles
 > Chaque poste de travail devra porter un nom hostname unique, et disposer d'un compte administrateur accessible par SSH
 Afin d'autoriser l'utilisateur root à se connecter en SSH :
+Il faudra donc installer opensshserver 
 Décommenter la ligne du fichier */etc/ssh/sshd.config *et mettre «yes»
 
 **`PermitRootlogin yes`**
-
+> Il faudra également installer python3-pip
 
 -------------  -------------
 ### Description basique des modules utilisés
