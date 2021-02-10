@@ -214,6 +214,7 @@ def sessionssh(ip, userID, password, REQ):
         la connexion sftp avec depôt du script deploy.py sur le PC distant
         execution du script distant
     """
+    system = ""
 	#ouverture de la session ssh
     try:
         ssh = paramiko.SSHClient()
