@@ -1,5 +1,4 @@
--------------  -------------
-### Script python d'automatisation de Configuration de poste client & de Gestion de Parc informatique
+**Script python d'automatisation de Configuration de poste client & de Gestion de Parc informatique**
 -------------  -------------
 
 | Auteur | Delphine Durand |
@@ -9,6 +8,14 @@
 | Version de Python | 3.7.3        |  
 
 Créé sur Linux pour environnement Linux      
+-------------  -------------
+
+
+[TOCM]
+
+[TOC]
+
+
 
 
 ### Contexte
