@@ -49,7 +49,7 @@ Ce script peut être appelé manuellement ou via un cron defini dans le crontab.
 | Etape| Commande                    |
 | ------------- | ------------------------------ |
 |**`Initialisation du répertoire local du serveur`** | `sudo git init`     |
-|**`Faire pointer le dépôt local pointe sur le dépôt distant`** |  `git remote add US https://github.com/deldemone/DelyWeb-Project.git`    |
+|**`Faire pointer le dépôt local pointe sur le dépôt distant`** |  `sudo git remote add US https://github.com/deldemone/DelyWeb-Project.git`    |
 |**`Clonez le dépôt et le dupliquer en local `** |  `sudo git clone https://github.com/deldemone/DelyWeb-Project.git` |
 
 
@@ -179,7 +179,7 @@ et un paramètre **facultatif** \-\-range ipdebut,ipfin <= derniers octets
 	de la bonne  éxecution de la précédente :
         A. La connexion ssh entre le serveur et le PC distant
         B. La connexion sftp avec depôt du script deploy.py sur le PC distant
-        C. ' execution du script deploy.py :
+        C. L'execution du script deploy.py :
 			1. Suppression de l'ancien userID
 					On vérifie qu'un ancien utilisateur est reférencé
 					Si présence d'un ancien utilisateur
@@ -215,10 +215,10 @@ Néanmoins il y a quelques fonctions interressantes qui pourraient aider la comm
 
 > Ces fonctions sont contenues dans le fichier Fonctions.py :
 
->- Fonctions intervenants sur les répertoires et les fichiers dans la partie "Environnement de travail"
-- Quelques fonctions outils (génération de chaines aléatoires, nettoyage de repertoire suivant les extensions de fichiers, etc)
-- Fonctions relatives aux connexions distantes via le SSH
-- Fonctions de création de QRCode
+> - Fonctions intervenants sur les répertoires et les fichiers dans la partie "Environnement de travail"
+> - Quelques fonctions outils (génération de chaines aléatoires, nettoyage de repertoire suivant les extensions de fichiers, etc)
+> - Fonctions relatives aux connexions distantes via le SSH
+> - Fonctions de création de QRCode
 
 >N'hésitez pas à me soumettre vos contributions, je suis très réactive.
 > https://docs.microsoft.com/fr-fr/learn/modules/contribute-open-source/3-contribute
