@@ -20,7 +20,7 @@ Créé sur Linux pour environnement Linux
     + [Importation du projet depuis Github](#importation-du-projet-depuis-github)
     + [Le SSH](#le-ssh)
     + [Installation des modules](#installation-des-modules)
-    + [Configuration des postes cibles](#configuration-des-postes-cibles)
+  * [Configuration des postes cibles](#configuration-des-postes-cibles)
   * [Description basique des modules utilisés](#description-basique-des-modules-utilisés)
   * [Les fichiers INPUT](#les-fichiers-input)
   * [Les fichiers OUTPUT](#les-fichiers-output)
@@ -86,7 +86,9 @@ Ce script peut être appelé manuellement ou via un cron defini dans le crontab.
 |**`qrcode et de pillow `** |  `$  sudo pip3 install qrcode[pil]` |
 > A noter : Pour les versions RedHat utiliser yum au lieu de apt
 
+-------------  -------------
 ### Configuration des postes cibles
+
 > Chaque poste de travail devra porter un nom hostname unique, et disposer d'un compte administrateur accessible par SSH
 Afin d'autoriser l'utilisateur root à se connecter en SSH :
 Il faudra donc installer opensshserver 
@@ -163,9 +165,9 @@ Néanmoins il y a quelques fonctions interressantes qui pourraient aider la comm
 >N'hésitez pas à me soumettre vos contributions, je suis très réactive.
 > https://docs.microsoft.com/fr-fr/learn/modules/contribute-open-source/3-contribute
 
-## Version:  
+## Version
 1.0
 
-## Licence:  
+## Licence
 #### GNU General Public License v3.0+ (see LICENSE or https://www.gnu.org/licenses/gpl-3.0.txt)
 
