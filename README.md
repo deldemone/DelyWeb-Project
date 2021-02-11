@@ -1,3 +1,4 @@
+
 **Script python d'automatisation de Configuration de poste client & de Gestion de Parc informatique**
 -------------  -------------
 
@@ -9,8 +10,26 @@
 
 Créé sur Linux pour environnement Linux      
 -------------  -------------
-
-
+**Tables des Matières**
+  * [Contexte](#contexte)
+  * [Description](#description)
+  * [Le crontab](#le-crontab)
+  * [Les prérequis](#les-prérequis)
+  * [Configuration du serveur](#configuration-du-serveur)
+    + [Les packets](#les-packets)
+    + [Importation du projet depuis Github](#importation-du-projet-depuis-github)
+    + [Le SSH](#le-ssh)
+    + [Installation des modules](#installation-des-modules)
+    + [Configuration des postes cibles](#configuration-des-postes-cibles)
+  * [Description basique des modules utilisés](#description-basique-des-modules-utilisés)
+  * [Les fichiers INPUT](#les-fichiers-input)
+  * [Les fichiers OUTPUT](#les-fichiers-output)
+  * [Execution du script et  arguments](#execution-du-script-et--arguments)
+  * [Déroulement du script](https://github.com/deldemone/DelyWeb-Project/blob/main/Documentation.md))
+  * [Sortie Console](#sortie-console)
+  * [Conclusion  et Contribution](#conclusion--et-contribution)
+- [Version](#version)
+- [Licence](#licence)
 
 ### Contexte
 > Ce script est un cas d'étude.
