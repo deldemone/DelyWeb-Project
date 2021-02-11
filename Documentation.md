@@ -87,3 +87,7 @@
 #### Step 10 : Suppression Des Fichiers Temporaires
 #### Step 11 : Affichage De La Nouvelle Arborescence
 
+### Sortie Console
+![](https://github.com/deldemone/DelyWeb-Project/blob/main/Documents/SortieConsole.PNG)
+
+##End
