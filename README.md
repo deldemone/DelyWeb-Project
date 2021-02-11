@@ -86,7 +86,7 @@ Ce script peut être appelé manuellement ou via un cron defini dans le crontab.
 |**`qrcode et de pillow `** |  `$  sudo pip3 install qrcode[pil]` |
 > A noter : Pour les versions RedHat utiliser yum au lieu de apt
 
-#### Configuration des postes cibles
+### Configuration des postes cibles
 > Chaque poste de travail devra porter un nom hostname unique, et disposer d'un compte administrateur accessible par SSH
 Afin d'autoriser l'utilisateur root à se connecter en SSH :
 Il faudra donc installer opensshserver 
