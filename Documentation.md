@@ -49,14 +49,14 @@
        l'adresse mac : mac 
        le hostname : host 
     """
-#### Step 6.C : Echange De Cle Serveur - Client
+#### Step 6.c : Echange De Cle Serveur - Client
 
     """ La fonction verifie que l'adresse mac ne soit pas déjà référencé dans l'inventaire
         si cet échange n'a pas déjà été effectué, 
         => déploiement de la clé publique du serveur sur le client distant 
         si le statut retourné est error le traitement de ce client sera annulé.
     """
-#### Step 6.D : Connexion SSH vers le client
+#### Step 6.d : Connexion SSH vers le client
 
     """ la session ssh se déroule en 3 étapes séquentielles qui dépendent 
 	de la bonne  éxecution de la précédente :
