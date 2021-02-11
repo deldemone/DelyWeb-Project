@@ -148,5 +148,5 @@ Néanmoins il y a quelques fonctions interressantes qui pourraient aider la comm
 1.0
 
 ## License:  
-#### GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+#### GNU General Public License v3.0+ (see LICENSE or https://www.gnu.org/licenses/gpl-3.0.txt)
 
