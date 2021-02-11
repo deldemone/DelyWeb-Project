@@ -147,6 +147,6 @@ Néanmoins il y a quelques fonctions interressantes qui pourraient aider la comm
 ## Version:  
 1.0
 
-## License:  
+## Licence:  
 #### GNU General Public License v3.0+ (see LICENSE or https://www.gnu.org/licenses/gpl-3.0.txt)
 
