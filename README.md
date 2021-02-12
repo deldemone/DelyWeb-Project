@@ -165,6 +165,20 @@ Néanmoins il y a quelques fonctions interressantes qui pourraient aider la comm
 >N'hésitez pas à me soumettre vos contributions, je suis très réactive.
 > https://docs.microsoft.com/fr-fr/learn/modules/contribute-open-source/3-contribute
 
+### Allez lancez-vous !
+Avant de commencer, il faudra dans un premier temps créer un compte Github : https://github.com.
+Vous allez cliquer sur le bouton « Fork » situé en haut à droite de la page projet.
+Désormais que vous avez fork le projet Github, nous allons commencer désormais à cloner le projet Symfony. 
+git clone https://github.com/Username/Username/DelyWeb-Project.git
+Maintenant que vous avez cloner le projet de votre dépôt, nous allons désormais commencer à créer une branche spécifique pour cette contribution.
+git branch test
+git checkout -b MaModif
+
+git commit -am "Ajout de mes modifs"
+git push origin MaModif
+
+Maintenant le code est actuellement sur votre dépôt Github fork du projet
+Il faudra cliquer sur le bouton Compare & pull request situé dans l’encadrement jaune.
 ## Version
 1.0
 
