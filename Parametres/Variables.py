@@ -16,7 +16,7 @@ __email__ = "contact@DelyWeb.fr"
 __status__ = "Production"
 
 ### Chargement des modules
-from Modules import *
+from Parametres.Modules import *
 
 
 ### VARIABLES GLOBALES

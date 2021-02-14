@@ -19,8 +19,8 @@ __email__ = "contact@DelyWeb.fr"
 __status__ = "Production"
 
 ### STEP 1 : Chargement des fonctions et des modules
-from Fonctions import *
-from Modules import *
+from Parametres.Fonctions import *
+from Parametres.Modules import *
 
 ### STEP 2 :	EXECUTION DU SCRIPT		
 """ 

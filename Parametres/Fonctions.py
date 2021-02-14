@@ -17,8 +17,8 @@ __status__ = "Production"
 
 
 ### Chargement des fonctions et des modules
-from Modules import *
-from Variables import *
+from Parametres.Modules import *
+from Parametres.Variables import *
 
 
 
